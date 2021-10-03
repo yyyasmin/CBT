@@ -288,7 +288,7 @@ function addNewNode(e, selected_node) {
 			
 			case "Situation":
 				new_gts_arr = {{ thoughts_new_nodes | safe }}
-				////console.log("new_gts_arr", new_gts_arr)
+				console.log("new_gts_arr", new_gts_arr)
 				
 				if (new_gts_arr==undefined || !new_gts_arr || new_gts_arr.length <= 0) {
 					alert("NO more new nodes aloud", new_gts_arr)

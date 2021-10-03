@@ -57,7 +57,7 @@ def edit_gts():
     print("")
     
     if request.method == 'GET':
-        gts = General_txt.query.order_by(General_txt.class_name).order_by(General_txt.title).all() 
+        gts = General_txt.query.filter(General_txt.hide==False).order_by(General_txt.class_name).order_by(General_txt.title).all() 
         return render_template('edit_gts.html', gts=gts)
     #IN CASE OF POST IT COMES FROM SEARCH BT CLASS NAME
     
@@ -89,7 +89,7 @@ def filter_by_class_name(class_name):
 
     #DEBUG ONLY
     #DEBUG ONLY    
-    return General_txt.query.filter(General_txt.class_name.isnot_distinct_from(class_name)).all() 
+    return General_txt.query.filter(General_txt.hide==False).filter(General_txt.class_name.isnot_distinct_from(class_name)).all() 
     
         
 @gt.route('/add_child_to_gt<int:gt_id>/<int:child_gt_id>', methods=['GET', 'POST'])
@@ -367,9 +367,12 @@ def gt_delete():
 #Here author is user_id
 def gt_delete2(selected_gt_id):
 
-	#print ("SSSSSSSSSSSSSelected gt is", selected_gt_id )
-	gt = general_txt_select2(selected_gt_id)
-	return redirect(url_for('gts.gt_delete'))
+    gt = general_txt_select2(selected_gt_id)
+
+    print ("SSSSSSSSSSSSSelected for delete gt is", gt )
+    print("")
+
+    return redirect(url_for('gts.gt_delete'))
 
     ############ START GT CATEGORY (TAG) #############
     																 	
@@ -398,7 +401,7 @@ def set_gt_category(gt_id, Ctg_of_gt_type, selected_category_title, str_msg):
         return(url_for('gts.edit_gts'))
     
     # For example: get all Tags
-    all_ctgs = eval(Ctg_of_gt_type).query.all()   # Example: get all Tags
+    all_ctgs = eval(Ctg_of_gt_type).query.filter(eval(Ctg_of_gt_type).hide==False).all()   # Example: get all Tags
     ####################import pdb; pdb.set_trace()
     for ctg in all_ctgs:   #delete the prevois category of the updated profile and set the new one
         if gt.is_parent_of(ctg):
@@ -437,7 +440,7 @@ def get_selected_category_of_gt(Ctg_type, gt):
 @gt.route('/get_categories_of', methods=['GET', 'POST'])
 def get_categories_of(gt):
 
-    gt_categories =  General_txt.query.filter(General_txt.body == gt.type).distinct().all()
+    gt_categories =  General_txt.query.filter(General_txt.hide==False).filter(General_txt.body == gt.type).distinct().all()
     
     ###########import pdb; pdb.set_trace()
     
@@ -508,7 +511,7 @@ def get_default_child(gt_id, child_type):
     print("IN get_default_child SUB_CHILD_TYPE:" , child_type)
     
     gt = General_txt.query.filter(General_txt==gt_id).first()
-    gt_children = eval(child_type).query.all()
+    gt_children = eval(child_type).query.filter(eval(child_type).hide==False).all()
     for c in gt_children:
         if gt.is_parent_of(c) and c.default==True:
             gt_default_child = c
@@ -530,7 +533,7 @@ def get_child_by_type(gt_id, child_type):
     print("IN get_child_by_type --- gt=",  gt.body)
 
     gt_child = None
-    gt_children = eval(child_type).query.all()
+    gt_children = eval(child_type).query.filter(eval(child_type).hide==Fasle).all()
     for c in gt_children:
         if gt.is_parent_of(c):
             gt_child = c

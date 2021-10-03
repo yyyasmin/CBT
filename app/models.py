@@ -274,6 +274,8 @@ class General_txt(db.Model):
         self.default = False
         self.used = True
         
+        self.image_url = 'default_image.jpg'
+        
     def __repr__(self):
         return self.class_name + ' ' + self.gt_type + ' ' +  str(self.id) + '  ' + self.title
   

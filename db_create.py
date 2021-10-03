@@ -7,12 +7,6 @@ import os.path
 ########## usually called in run.py ################
 from app import create_app, db
 
-from app.models import  User, Student, Teacher, Profile, Strength, Weakness
-from app.models import  General_txt, Destination, Goal, Todo
-from app.models import  Profile, Strength, Weakness, Subject
-from app.models import  Role, Std_general_txt
-from app.models import  Tag, Accupation, Status, Scrt, Resource, Document, Ufile
-from app.models import  Situation, Solution
 from app.models import  *
 
 app = create_app() 

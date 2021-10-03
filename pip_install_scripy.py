@@ -24,6 +24,7 @@ pip3 install pandas --no-build-isolation;
 pip install flask-bootstrap;
 pip install sqlalchemy_imageattach;
 pip install simplejson;
+pip install dotenv;
 
 
 '''

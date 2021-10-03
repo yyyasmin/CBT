@@ -125,18 +125,7 @@ def show_student_tree():
     gts_arr = []
     
     #DEBUG TO BE DELETED
-    gts = General_txt.query.filter(General_txt.hide==False).all()
-    for gt in gts:
-        if gt.title == "Enter your title":
-            gt.used = False
-            print("DDDDDDDDDDDeleting DEBUG GT", gt)
-            print("")
 
-            #db.session.delete(gt)
-            #db.session.commit()
-        else:
-            gt.used = True
-    db.session.commit()
     #DEBUG TO BE DELETED
     
     
@@ -285,7 +274,7 @@ def set_gt_node(gt, parent_arr, user_node):
         "image_url":  gt.image_url,
         "parent_id":  parent_id,
                 		
-		"user_node":    user_node,
+		#"user_node":    user_node,
 		"in_user_path": "false",
 		"node_pushed":  "false",
 
@@ -311,7 +300,7 @@ def set_new_emty_gt_node(gt_to_copy, user_node):
     new_gt.title = "Enter your title"
     new_gt.body =  "Enter your body"     
     new_gt.image_url = gt_to_copy.image_url          
-    new_gt.used = False
+    #new_gt.used = False
     new_gt.color = "lightgray", 
     
     new_gt.user_node = user_node,    

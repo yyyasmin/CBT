@@ -1,6 +1,6 @@
 web: gunicorn run:app --log-level=debug;
 
-init: flask db init;
+init: python db_create.py;
 migrate: flask db migrate
 upgrade: flask db upgrade
 

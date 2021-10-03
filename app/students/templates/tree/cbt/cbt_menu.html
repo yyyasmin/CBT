@@ -1,0 +1,28 @@
+{% block cbt_menu %}
+
+<style>
+
+</style>
+
+</br>
+	
+	
+	<center><table class="std_table">
+		<tr>			
+			<th>תעודת זהות</th>
+			<th>שם</th>
+			<th>שם משפחה</th>
+			<th>פעולות עריכה</th>
+		</tr>
+		<tr>
+			<td>{{ std.id }}</td>
+			<td>{{ std.first_name }}</td>
+			<td>{{ std.last_name }}</td>
+			<td>
+				{% include "cbt_actions.html" %}
+			</td>
+		</tr>
+			
+	</table></center>
+
+{% endblock cbt_menu %}

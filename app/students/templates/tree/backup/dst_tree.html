@@ -1,0 +1,407 @@
+
+{% extends "layout.html" %}
+
+	
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+
+{% with from_dst_sort_order=3 %} 
+	{% include "dst_title.html" %} 
+{% endwith %} 
+ 
+
+ <script id="code">
+
+    function init() {
+      if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
+      let $ = go.GraphObject.make;  // for conciseness in defining templates
+      
+	  myFullDiagram =
+        $(go.Diagram, "fullDiagram",  // each diagram refers to its DIV HTML element by id
+			{
+				initialAutoScale: go.Diagram.UniformToFill,  // automatically scale down to show whole tree
+				maxScale: 0.70,
+
+				contentAlignment: go.Spot.Center,  // center the tree in the viewport
+				
+				layout: $(go.TreeLayout,
+				{ angle: 90, sorting: go.TreeLayout.SortingAscending } ),
+				maxSelectionCount: 1,  // only one node may be selected at a time in each diagram
+
+				// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/extensions/TextEditor.html
+				//"textEditingTool.defaultTextEditor": window.TextEditorSelectBox, // defined in textEditorSelectBox.js 				
+				"textEditingTool.defaultTextEditor": window.TextEditor,
+				
+				'undoManager.isEnabled': true, 
+				
+				"ChangedSelection": highlightUsrNodesPath,  // FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/localView.html
+				
+			} );
+
+
+	let myNodeTemplate =
+		$(go.Node, "Auto",
+			{ 	locationSpot: go.Spot.Center,
+				click: switchNodeColor,  },
+				//doubleClick: addNewNode,  },
+					
+	<!-- FROM https://forum.nwoods.com/t/centering-textblocks-in-panels/7941/9  -->	
+			// FROM https://forum.nwoods.com/t/issues-with-adding-a-node-dynamically-on-button-click/14066
+			$( go.Panel, "Table",
+			
+			$(go.RowColumnDefinition, {row :6, column : 2} ),
+			
+				new go.Binding("background", "fill_color"),
+	
+					$(go.Picture,
+						{  row : 0, column : 0,
+						   margin: 10, width: 60, height: 60, background: "red", alignment: go.Spot.Left, },
+						new go.Binding("source") ) ,
+							
+					$(go.TextBlock, { 
+						row : 0, column : 1,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "h_name")  ),
+	
+					$(go.TextBlock, {  
+						row : 2, column : 0,
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "key")  ),
+					
+					$(go.TextBlock, { 
+						row : 3, column : 0,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "name" ) ),
+						//new go.Binding("editable", "name", function(t) { console.log("T-NAME", t, name=="Enter your body"); return name=="Enter your title" } )  ),
+						//new go.Binding("visible", "name", function(t) { console.log("T-NAME", t); return !!t; }) ),  // MAKE VISIBLE ONLY IF name EXIST
+						
+					$(go.TextBlock, { 
+						editable: true,
+						row : 3, column : 1,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "usr_title" ).makeTwoWay() ),
+						//new go.Binding("visible", "name", function(t) { console.log("T-NAME", t); return !!t; }) ),  // MAKE VISIBLE ONLY IF usr_title EXIST
+	
+					$(go.TextBlock, {  
+						row : 4, column : 0,
+						//textEditable: true,
+						//editable:true,			
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" },
+							
+						new go.Binding("text", "status").makeTwoWay(),
+
+						new go.Binding("fill", "tb_fill_color").makeTwoWay(),
+
+						new go.Binding("fill", "color2").makeTwoWay(),
+
+						new go.Binding("stroke", "text_color").makeTwoWay(),
+						
+						new go.Binding("text", "gt_color").makeTwoWay(),						
+							
+						new go.Binding("text", "class_name"),	
+							new go.Binding("visible", "gt_color", function(t) { return false } )  ),  // DONT SHOW CLASS-NAME
+							
+					// FROM https://gojs.net/latest/intro/buttons.html		
+					$("TreeExpanderButton",  {
+							row: 5, column: 0,
+							name: 'TREEBUTTON',
+							visible: true,	
+						},
+					$(go.TextBlock, "פתח רמה הבאה", { margin: 3 } ) ),	// FROM https://gojs.net/latest/intro/buttons.html
+
+		
+			),   // END Pane Table
+			
+        );  // END myNodeTemplate
+	
+	// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/adornmentButtons.html	
+	//myFullDiagram.nodeTemplate.selectionAdornmentTemplate =
+	let selectionAdornmentTemplate =
+	 $(go.Adornment, "Spot",
+		{ visible: true },
+		
+		$(go.Panel, "Auto",
+			$(go.Shape, { visible: true, stroke: "dodgerblue", strokeWidth: 2, fill: null }),
+			$(go.Placeholder) ),
+		
+
+		$(go.Panel, "Horizontal",
+		{ visible: true, alignment: go.Spot.Bottom, alignmentFocus: go.Spot.Top },
+
+
+			// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/adornmentButtons.html
+			$(go.Panel, "Spot",
+				{ visible: true },
+
+				// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/incrementalTree.html
+				$("Button",  {
+						width: 80, height: 25,
+						visible: true,
+						//alignment: go.Spot.Left,
+						//alignmentFocus: go.Spot.Top,
+						name: 'NEWNODE',
+						click: addNewNode 
+					},
+				$(go.TextBlock, "פתח חדש", { margin: 3 },  )  ),
+			),
+
+		)
+
+	)  // END selectionAdornmentTemplate
+
+				
+		myFullDiagram.nodeTemplate = myNodeTemplate;
+		myFullDiagram.nodeTemplate.selectionAdornmentTemplate = selectionAdornmentTemplate
+
+		// Define a basic link template, not selectable
+		let myLinkTemplate =
+			$( go.Link,
+				{ routing: go.Link.Normal, selectable: false },
+				$(go.Shape,
+				{ strokeWidth: 2 } ),
+				{ curve: go.Link.Bezier },  // Bezier curve
+
+				$(go.Panel, "Horizontal", {
+					segmentOffset: new go.Point(0, -10),
+				} ),			
+			);
+
+		myFullDiagram.linkTemplate = myLinkTemplate;
+		setupDiagram();
+		
+		myFullDiagram.nodes.each(function(n)  {  // HIGHLITER FOR EACH NODE
+			// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/localView.html		
+							
+			let n_hl_name = "HIGHLIGHTER" + n.data.key
+		
+			let highlighter = 
+			
+				$(go.Part, "Auto",  {
+					name: n_hl_name,
+					layerName: "Background",
+					selectable: false,
+					isInDocumentBounds: false,
+					locationSpot: go.Spot.Center  
+				},		
+				$(go.Shape, "Ellipse",
+				{
+					fill: $(go.Brush, "Radial", { 0.0: "yellow", 1.0: "white" }),
+					stroke: null,
+					desiredSize: new go.Size(400, 400)  })  )
+				
+			myFullDiagram.add(highlighter);	
+			
+		}  )									
+		
+
+		
+	}  // END init
+
+		
+// FROM https://forum.nwoods.com/t/dynamically-created-nodes-are-overlapping/9226
+function addNewNode(e, selected_node) {
+
+	let m = myFullDiagram.model
+	let newNodeData
+	//let newlink
+	
+	
+	let a_node = selected_node.part.adornedPart;
+	
+	//console.log("IN addNewNode A-NODE-DATA ", a_node.data )
+	
+	myFullDiagram.startTransaction("addNode");
+			
+	let cn = a_node.data.class_name
+	
+	switch(cn)  {
+	
+		case "Person":
+			cn = "Situation"
+			new_gts_arr = {{ situations_new_nodes | safe }}
+			//console.log("new_gts_arr", new_gts_arr)
+			new_gt = new_gts_arr.pop()
+			console.log("new_gt", new_gt)
+			break;
+		
+		case "Situation":
+			cn = "Thought"
+			new_gts_arr = {{ thoughts_new_nodes | safe }}
+			//console.log("new_gts_arr", new_gts_arr)
+			new_gt = new_gts_arr.pop()
+			console.log("new_gt", new_gt)
+			break;
+		
+		case "Thought":
+			cn = "Emotion"
+			new_gts_arr = {{ emotions_new_nodes | safe }}
+			//console.log("new_gts_arr", new_gts_arr)
+			new_gt = new_gts_arr.pop()
+			console.log("new_gt", new_gt)
+			break;
+		
+		case "Emotion":			
+			cn = "Behavior"
+			new_gts_arr = {{ behaviors_new_nodes | safe }}
+			//console.log("new_gts_arr", new_gts_arr)
+			new_gt = new_gts_arr.pop()
+			console.log("new_gt", new_gt)
+			break;
+		
+		case "Behavior":
+			break
+			cn = "Result"
+			new_gts_arr = {{ results_new_nodes | safe }}
+			//console.log("new_gts_arr", new_gts_arr)
+			new_gt = new_gts_arr.pop()
+			console.log("new_gt", new_gt)
+			break;
+			
+		default: 
+			cn = "Behavior"
+			new_gts_arr = {{ behaviors_new_nodes | safe }}
+			//console.log("new_gts_arr", new_gts_arr)
+			new_gt = new_gts_arr.pop()
+			console.log("new_gt", new_gt)
+			break;
+		
+	}
+	
+	newNodeData =  {
+			key:         new_gt.id,
+			parent:      a_node.key,
+			source:      new_gt.image_url,
+			h_name:      new_gt.h_name,
+			
+			textEditable: true,
+			editable:true,			
+			user_node: "true",
+			
+			fill_color:  new_gt.color,
+			gt_color:    new_gt.color,
+			
+			//name:   new_gt.title,	
+			usr_title:   new_gt.title,	
+			//usr_body:    new_gt.body,	
+						
+		}
+	
+	m.addNodeData( newNodeData );  // this makes sure the key is unique
+	
+	console.log ("BEFORE TRANSACTION COMMIT 1111 add new newNodeData : NEW-GT: ", new_gt)
+	
+	myFullDiagram.commitTransaction("addNode");
+	
+	console.log ("AFTER TRANSACTION COMMIT 22222 add new newNodeData : NEW-GT: ", new_gt)
+
+}
+	  
+
+
+let color_choices_arr = ["green", "gold", "red", "blue", "pink", "yellow", "lightgray"]
+let color_idx = 0
+	  
+// SWITCH NODE BETWEEN GRAY AND COLOR
+function switchNodeColor(e, selected_node) {
+
+	let m = myFullDiagram.model
+	
+	//console.log("IN switchNodeColor selected_node ", selected_node.data)
+	
+	m.startTransaction("changeNodeColor");
+	
+	if (selected_node.data.user_node == "true")  {  // USER PRIVATE NODE
+		m.setDataProperty(selected_node.data, "fill_color", color_choices_arr[color_idx%7]);
+		color_idx++
+	}
+
+	else  {  // PUBLIC NODE
+		if (selected_node.data.fill_color == "lightgray")
+			m.setDataProperty(selected_node.data, "fill_color", selected_node.data.gt_color); //Retrieve the original dat	
+		else	
+			m.setDataProperty(selected_node.data, "fill_color", "lightgray"); //GRAY THE NODE	
+	}
+	
+	m.commitTransaction("changeNodeColor");
+	
+}	
+
+
+let node_highlighter_arr = []				
+let nodeDataArray = [];
+function setupDiagram() {
+		
+	let student_dsts = {{ student_dsts | safe }} 		
+	for ( let i=0; i< student_dsts.length; i++ )  {  // DESTINATIONS
+		let dest = student_dsts[i]										
+		{% include './tree/dst_tree_dst_data.js' %}
+		
+		let dst_goals = {{dst_goals | safe}}			
+		for ( let j=0; j< dst_goals.length; j++ )  {  // GOALS
+			let goal = dst_goals[j]
+			{% include './tree/dst_tree_goal_data.js' %}
+			
+			let dst_todos = {{dst_todos | safe}}
+			for ( let k=0; k<dst_todos.length; k++ )  {  // TODOS
+				let todo = dst_todos[k]
+				{% include './tree/dst_tree_todo_data.js' %}
+			}  //TODOS	
+			
+		}  //GOALS		
+		
+	}  // DESTINATIONS
+	
+	myFullDiagram.model = new go.TreeModel(nodeDataArray);
+
+}
+
+
+
+function highlightUsrNodesPath(e, selected_node) {
+
+	let parent_node = myFullDiagram.selection.first()
+				
+	while (parent_node !== null)  {
+	
+		let h = findPart( 'HIGHLIGHTER' + parent_node.data.key )
+		
+		myFullDiagram.startTransaction("HL")
+		
+			myFullDiagram.scrollToRect(parent_node.actualBounds);
+			
+			console.log( "parent_node.location X ", parent_node.location.x)
+			
+			h.location = parent_node.location;
+			parent_node = parent_node.findTreeParentNode();
+		
+		myFullDiagram.commitTransaction("HL")
+
+	}
+
+}
+
+
+// FROM https://forum.nwoods.com/t/removing-a-part/7591/5
+function findPart(name) {
+	let it = myFullDiagram.parts;
+	while (it.next()) {
+		if (it.value.name === name) return it.value;
+	}
+	return null;
+}
+
+		
+  </script>
+</head>
+
+
+<body onload="init()">
+	<div id="fullDiagram" style="height:900px; width:100%; border:1px solid black;"></div>
+</body>
+
+</html>
+{% endblock %}

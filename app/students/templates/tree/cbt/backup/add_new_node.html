@@ -1,0 +1,63 @@
+{% block add_new_node %}
+
+	console.log(" IN Add NEW NODE GT= ", gt)
+
+	gt_already_in_diagram = false
+	
+	console.log ("IN GT NODE gt:", gt.id, gt.class_name, gt)
+	console.log ("IN GT NODE nodesKeyPushed:",nodesKeyPushed)
+	
+	for (let nkp_idx=0; nkp_idx<=nodesKeyPushed.length; nkp_idx++) {
+		console.log ( "nodesKeyPushed-i", nkp_idx, nodesKeyPushed[nkp_idx] )
+		if (nodesKeyPushed[nkp_idx] == gt.id )  {
+			gt_already_in_diagram = true
+			console.log ("This NODE ALLREADY IN DIAGRAM gt.id", gt.id, gt.class_name, nodesKeyPushed)
+			break;
+		}
+	}
+
+	if (editable) {
+	
+		user_node: "true",				
+		textEditable: true,
+		editable: true,
+		
+	}
+	
+	else {
+	
+		user_node: "false",				
+		textEditable: false,
+		editable: false,
+		
+	}
+	
+	
+	if (!gt_already_in_diagram )  {
+		
+		nodesKeyPushed[nodesKeyPushed.length] = gt.id 
+
+		
+		nodeDataArray.push( {
+			key: gt.id,
+			parent: parent_id,
+
+			fill_color: gt.color,
+			gt_color: gt.color,
+			source:  gt.image_url,
+			h_name:  gt.h_name,
+			
+			name: gt.title,
+			class_name:  gt.class_name,
+			
+			user_node: "false",
+			in_user_path: in_user_path,
+					
+			textEditable: false,
+			editable: false,
+			
+			} );
+	}
+	
+			
+{% endblock add_new_node %}

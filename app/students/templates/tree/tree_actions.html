@@ -1,0 +1,41 @@
+{% extends "layout.html" %} 
+
+{% block content %}
+
+
+<style>
+
+.textareaContainer {	
+	align: center;
+	text-align:right;
+	width: 100%;
+
+}
+  
+#textarea_id { 
+	border: 3px solid #555c;	
+	align: center;
+	text-align:right;
+	width: 100%;
+	cols: 130;
+}
+ 
+</style>
+
+
+
+    <form role="form" method="POST" action='' style="margin:5%;"> 
+	
+		<div class="form-group">
+		  <label for="id">save_diagram</label>
+		  <input type="title" class="form-control" id="save_diagram" name="save_diagram" value="save_diagram()">
+		</div>  
+			
+
+		
+		<button type="submit" class="btn btn-default">שמור</button>
+		
+	</form>
+			
+{% endblock %}
+

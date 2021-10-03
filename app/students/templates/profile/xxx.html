@@ -1,0 +1,10 @@
+	{% for att in profile.attributes %}							
+		<button class="btn btn-warning btn-xs" ><a style="background-color:green; color:white" href="{{ url_for('students.match_attribute_to_std_profile2', selected_attribute_id=att.id) }}">הוסף לתלמיד</a></button>			
+		<button class="btn btn-warning btn-xs" ><a style="background-color:red; color: black" href="{{ url_for('{{ attribute }}s.{attribute_update', selected_attribute_id=att.id) }}">ערוך</a></button>			
+		
+		<button class="accordion">כותרת חולשה:  att.title </button>
+		<div class="panel">
+		  <button>תאור חולשה:  att.body.</button>				
+		</div>
+		<br>
+	{% endfor %}

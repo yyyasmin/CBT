@@ -1,0 +1,4 @@
+./backup
+./db_backup
+./__pycache__
+./app/db_create.py

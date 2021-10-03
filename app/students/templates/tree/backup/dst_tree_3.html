@@ -1,0 +1,577 @@
+
+{% extends "layout.html" %}
+
+	
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+
+{% with from_dst_sort_order=3 %} 
+	{% include "dst_title.html" %} 
+{% endwith %} 
+ 
+
+ <script id="code">
+
+    function init() {
+      if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
+      let $ = go.GraphObject.make;  // for conciseness in defining templates
+      
+	  myFullDiagram =
+        $(go.Diagram, "fullDiagram",  // each diagram refers to its DIV HTML element by id
+			{
+				initialAutoScale: go.Diagram.UniformToFill,  // automatically scale down to show whole tree
+				maxScale: 0.70,
+
+				contentAlignment: go.Spot.Center,  // center the tree in the viewport
+				
+				layout: $(go.TreeLayout,
+				{ angle: 90, sorting: go.TreeLayout.SortingAscending } ),
+				maxSelectionCount: 1,  // only one node may be selected at a time in each diagram
+
+				// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/extensions/TextEditor.html
+				//"textEditingTool.defaultTextEditor": window.TextEditorSelectBox, // defined in textEditorSelectBox.js 				
+				"textEditingTool.defaultTextEditor": window.TextEditor,
+				
+				'undoManager.isEnabled': true, 
+				
+				//"ChangedSelection": highlightUsrNodesPath,  // FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/localView.html
+		
+			} );  // END myFullDiagram
+			
+			
+	// START MENU DIAGRAM
+	// FROM https://gojs.net/latest/intro/buttons.html
+      
+	myMenuDiagram =
+        $(go.Diagram, "menuDiagram",   { // each diagram refers to its DIV HTML element by id				
+				initialAutoScale: go.Diagram.UniformToFill,  // automatically scale down to show whole tree
+				maxScale: 0.80,
+				contentAlignment: go.Spot.Center,  // center the tree in the viewport
+				maxSelectionCount: 1,  // only one node may be selected at a time in each diagram
+				"undoManager.isEnabled": true,
+			
+			} 
+		);  // END menuDiagram
+			
+		$(go.Node, "Auto",  // START NENU NODE
+			{ locationSpot: go.Spot.Center },
+			$(go.Shape, "Rectangle",
+			{ fill: "green" } ),
+			
+			$(go.Panel, "Vertical",
+				{ margin: 3 },
+				$("Button",
+				{ margin: 2,
+				click: save_diagram },
+				$(go.TextBlock, "Save User Diagram")),
+				
+				$(go.TextBlock,
+				new go.Binding("text", "save_diagram", save_diagram ) )
+			)  // END $(go.Panel, "Vertical"
+		);  // END NENU NODE
+
+	myMenuDiagram.model = new go.GraphLinksModel( [ { save_diagram: "Save" } ] );
+  
+
+
+	// END MENU DIAGRAM
+
+
+	let myNodeTemplate =
+		$(go.Node, "Auto",
+			{ 	locationSpot: go.Spot.Center,
+				click: switchNodeColor,  },
+				//doubleClick: addNewNode,  },
+					
+	<!-- FROM https://forum.nwoods.com/t/centering-textblocks-in-panels/7941/9  -->	
+			// FROM https://forum.nwoods.com/t/issues-with-adding-a-node-dynamically-on-button-click/14066
+			$( go.Panel, "Table",
+			
+			$(go.RowColumnDefinition, {row :7, column : 2} ),
+			
+				new go.Binding("background", "fill_color"),
+	
+					$(go.Picture,
+						{  row : 0, column : 0,
+						   margin: 10, width: 60, height: 60, background: "red", alignment: go.Spot.Left, },
+						new go.Binding("source") ) ,
+							
+					$(go.TextBlock, { 
+						row : 0, column : 1,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "h_name")  ),
+	
+					$(go.TextBlock, {  
+						row : 2, column : 0,
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "key")  ),
+					
+					$(go.TextBlock, { 
+						row : 3, column : 0,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "name" ) ),
+						
+					$(go.TextBlock, { 
+						editable: true,
+						row : 3, column : 1,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "usr_title" ).makeTwoWay() ),
+							
+					$(go.TextBlock, { 
+						editable: true,
+						row : 4, column : 1,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "usr_body" ).makeTwoWay() ),
+	
+					$(go.TextBlock, {  
+						row : 5, column : 0,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" },
+							
+						new go.Binding("text", "status").makeTwoWay(),
+
+						//new go.Binding("fill", "tb_fill_color").makeTwoWay(),
+
+						new go.Binding("fill", "color2").makeTwoWay(),
+						
+						new go.Binding("text", "gt_color").makeTwoWay(),
+						
+						new go.Binding("stroke", "text_color").makeTwoWay(),
+						
+						new go.Binding("text", "in_user_path").makeTwoWay(),
+						
+						//new go.Binding("visible", "visible").makeTwoWay(),						
+						// FROM https://gojs.net/latest/intro/dataBinding.html
+						//new new go.Binding("visible", "user_node", function(user_node) { return user_node =="false"; }),
+
+						new go.Binding("text", "class_name"),	
+							new go.Binding("visible", "class_name", function(t) { return false } )  ),// DONT SHOW CLASS-NAME
+							
+					// FROM https://gojs.net/latest/intro/buttons.html		
+					$("TreeExpanderButton",  {
+							row: 6, column: 0,
+							name: 'TREEBUTTON',
+							visible: false,	
+						},
+					$(go.TextBlock, "פתח רמה הבאה", { margin: 3 } ) ),	// FROM https://gojs.net/latest/intro/buttons.html
+
+		
+			),   // END Pane Table
+			
+			
+        );  // END myNodeTemplate
+	  
+  
+	// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/adornmentButtons.html	
+	//myFullDiagram.nodeTemplate.selectionAdornmentTemplate =
+	let selectionAdornmentTemplate =
+	 $(go.Adornment, "Spot",
+		{ visible: true },
+		
+		$(go.Panel, "Auto",
+			$(go.Shape, { visible: true, stroke: "dodgerblue", strokeWidth: 2, fill: null }),
+			$(go.Placeholder) ),
+		
+
+		$(go.Panel, "Horizontal",
+		{ visible: true, alignment: go.Spot.Bottom, alignmentFocus: go.Spot.Top },
+
+
+			// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/adornmentButtons.html
+			$(go.Panel, "Spot",
+				{ visible: true },
+
+				// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/incrementalTree.html
+				$("Button",  {
+						width: 80, height: 25,
+						visible: true,
+						//alignment: go.Spot.Left,
+						//alignmentFocus: go.Spot.Top,
+						name: 'NEWNODE',
+						click: addNewNode 
+					},
+				$(go.TextBlock, "פתח חדש", { margin: 3 },  )  ),
+			),
+
+		)
+
+	)  // END selectionAdornmentTemplate
+
+				
+		myFullDiagram.nodeTemplate = myNodeTemplate;
+		myFullDiagram.nodeTemplate.selectionAdornmentTemplate = selectionAdornmentTemplate
+
+		// Define a basic link template, not selectable
+		let myLinkTemplate =
+			$( go.Link,
+				{ routing: go.Link.Normal, selectable: false },
+				$(go.Shape,
+				{ strokeWidth: 2 } ),
+				{ curve: go.Link.Bezier },  // Bezier curve
+
+				$(go.Panel, "Horizontal", {
+					segmentOffset: new go.Point(0, -10),
+				} ),			
+			);
+
+		myFullDiagram.linkTemplate = myLinkTemplate;
+		setupDiagram();
+		
+		/***************************/
+		myFullDiagram.nodes.each(function(n)  {  // HIGHLITER FOR EACH PUBLIC NODE
+			// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/localView.html
+			
+			console.log("N-DATA", n.visible, n.data.key, n.data.name)
+			
+			let n_hl_name = "HIGHLIGHTER" + n.data.key
+			
+			let highlighter = 
+			
+				$(go.Part, "Auto",  {
+					name: n_hl_name,
+					layerName: "Background",
+					selectable: false,
+					isInDocumentBounds: false,
+					locationSpot: go.Spot.Center,
+					location: n.location,
+				},		
+				$(go.Shape, "Ellipse",
+				{
+					fill: $(go.Brush, "Radial", { 0.0: "yellow", 1.0: "lightyellow" }),
+					stroke: null,
+					desiredSize: new go.Size(400, 350)  })  )
+				
+			myFullDiagram.add(highlighter);	
+			
+		}  )	// END // HIGHLITER FOR EACH PUBLIC NODE
+		/**********************************/		
+		
+		/***************************/
+		let all_new_gts = {{ all_new_gts | safe }}
+		for ( let i=0; i<all_new_gts.length; i++ )  {  // HIGHLITER FOR EACH USER NODE
+			
+			n = all_new_gts[i]
+			console.log("GT", n, n.id)
+			
+			let n_hl_name = "HIGHLIGHTER" + n.id
+			console.log("USER HIGh-Lighter-NAME ", n_hl_name)
+			
+			let highlighter = 
+			
+				$(go.Part, "Auto",  {
+					name: n_hl_name,
+					layerName: "Background",
+					selectable: false,
+					isInDocumentBounds: false,
+					locationSpot: go.Spot.Center,
+					//location: n.location,
+				},		
+				$(go.Shape, "Ellipse",
+				{
+					fill: $(go.Brush, "Radial", { 0.0: "yellow", 1.0: "lightyellow" }),
+					stroke: null,
+					desiredSize: new go.Size(400, 350)  })  )
+				
+			myFullDiagram.add(highlighter);	
+			
+		}  // END // HIGHLITER FOR EACH NODE
+		/**********************************/
+		
+
+		
+	}  // END init
+
+
+
+let highlighter
+		
+// FROM https://forum.nwoods.com/t/dynamically-created-nodes-are-overlapping/9226
+function addNewNode(e, selected_node) {
+
+	let m = myFullDiagram.model
+	let newNodeData
+	//let newlink
+	
+	
+	let a_node = selected_node.part.adornedPart;
+	
+	//console.log("IN addNewNode A-NODE-DATA ", a_node.data )
+	
+	myFullDiagram.startTransaction("addNode");
+			
+		let cn = a_node.data.class_name
+		
+		switch(cn)  {
+		
+			case "Person":
+				cn = "Situation"
+				new_gts_arr = {{ situations_new_nodes | safe }}
+				//console.log("new_gts_arr", new_gts_arr)
+				new_gt = new_gts_arr.pop()
+				console.log("new_gt", new_gt)
+				break;
+			
+			case "Situation":
+				cn = "Thought"
+				new_gts_arr = {{ thoughts_new_nodes | safe }}
+				//console.log("new_gts_arr", new_gts_arr)
+				new_gt = new_gts_arr.pop()
+				console.log("new_gt", new_gt)
+				break;
+			
+			case "Thought":
+				cn = "Emotion"
+				new_gts_arr = {{ emotions_new_nodes | safe }}
+				//console.log("new_gts_arr", new_gts_arr)
+				new_gt = new_gts_arr.pop()
+				console.log("new_gt", new_gt)
+				break;
+			
+			case "Emotion":			
+				cn = "Behavior"
+				new_gts_arr = {{ behaviors_new_nodes | safe }}
+				//console.log("new_gts_arr", new_gts_arr)
+				new_gt = new_gts_arr.pop()
+				console.log("new_gt", new_gt)
+				break;
+			
+			case "Behavior":
+				break
+				cn = "Result"
+				new_gts_arr = {{ results_new_nodes | safe }}
+				//console.log("new_gts_arr", new_gts_arr)
+				new_gt = new_gts_arr.pop()
+				console.log("new_gt", new_gt)
+				break;
+				
+			default: 
+				cn = "Behavior"
+				new_gts_arr = {{ behaviors_new_nodes | safe }}
+				//console.log("new_gts_arr", new_gts_arr)
+				new_gt = new_gts_arr.pop()
+				console.log("new_gt", new_gt)
+				break;
+			
+		}
+		
+		console.log("NEW-GT, NEW-GT-COLOR",new_gt.color)
+		
+		newNodeData =  {
+				key:         new_gt.id,
+				parent:      a_node.key,
+				source:      new_gt.image_url,
+				h_name:      new_gt.h_name,
+				
+				textEditable: true,
+				editable:true,			
+				user_node: "true",
+				
+				fill_color:  new_gt.color,
+				gt_color:    new_gt.color,
+				
+				//name:   new_gt.title,	
+				usr_title:   new_gt.title,	
+				usr_body:    new_gt.body,
+				in_user_path: "false",
+				
+							
+			}
+		
+		m.addNodeData( newNodeData );  // this makes sure the key is unique
+							
+	myFullDiagram.commitTransaction("addNode");
+
+}
+
+
+let color_choices_arr = ["green", "gold", "red", "blue", "pink", "yellow", "lightgray"]
+let color_idx = 0
+	  
+// SWITCH NODE BETWEEN GRAY AND COLOR
+function switchNodeColor(e, selected_node) {
+			
+	let m = myFullDiagram.model
+	
+	// FROM https://forum.nwoods.com/t/focus-to-next-created-node-or-object/11491
+	selected_node.scrollToPart = true;
+	//myFullDiagram.scrollToRect(selected_node.actualBounds);
+	
+	m.startTransaction("changeNodeColor");	
+
+	if (selected_node.data.user_node == "true")  {  // USER PRIVATE NODE
+		m.setDataProperty(selected_node.data, "fill_color", color_choices_arr[color_idx%7]);
+		color_idx++
+	}
+	
+	else  {  // PUBLIC NODE
+	
+		if (selected_node.data.fill_color == "lightgray")
+			m.setDataProperty(selected_node.data, "fill_color", selected_node.data.gt_color); //Retrieve the original dat	
+		else	
+			m.setDataProperty(selected_node.data, "fill_color", "lightgray"); //GRAY THE NODE	
+	}
+	
+	m.commitTransaction("changeNodeColor");
+	highlightUsrNodesPath( selected_node )
+
+	
+}
+
+
+let node_highlighter_id_arr = []				
+let nodeDataArray = [];
+function setupDiagram() {
+		
+	let situations = {{ situations | safe }}
+	
+	console.log("situations", situations)
+	
+	for ( let i=0; i< situations.length; i++ )  {  // SITUATIONS
+		let situation = situations[i]										
+		{% include './tree/situation_nodes.js' %}
+		
+		let thoughts = {{thoughts | safe}}			
+		for ( let j=0; j< thoughts.length; j++ )  {  // THOGHTS
+			let thought = thoughts[j]
+			if ( thought.parent_id == situation.id && thought.id>0 )  {
+				{% include './tree/thought_nodes.js' %}
+			}
+			let emotions = {{emotions | safe}}
+			for ( let k=0; k<emotions.length; k++ )  {  // EMOTIONS
+				let emotion = emotions[k]
+				if (emotion.parent_id == thought.id && emotion.color == thought.color && emotion.id>0)  {
+					{% include './tree/emotion_nodes.js' %}
+				}
+				let behaviors = {{behaviors | safe}}
+				for ( let k=0; k<behaviors.length; k++ )  {  // BEHAVIORS
+					let behavior = behaviors[k]
+						if (behavior.parent_id == emotion.id && behavior.color == emotion.color && behavior.id>0)  {
+					}
+					{% include './tree/behavior_nodes.js' %}
+				
+					let results = {{results | safe}}
+					for ( let k=0; k<results.length; k++ )  {  // RESULTS
+						let result = results[k]
+						if (result.parent_id == behavior.id && result.color == behavior.color && result.id>0)  {
+							{% include './tree/result_nodes.js' %}
+						}
+					}  //RESULTS
+					
+				}  //BEHAVIORS
+					
+			}  //EMOTIONS
+		
+		}  //THOGHTS		
+		
+	}  // SITUATIONS
+	
+	myFullDiagram.model = new go.TreeModel(nodeDataArray);
+}
+
+
+
+function highlightUsrNodesPath(e, selected_node) {
+	
+	let parent_node = myFullDiagram.selection.first()
+				
+		myFullDiagram.nodes.each(function(n)  {  //CLEAR ALL HIGHLITS
+	
+		myFullDiagram.startTransaction("v")
+
+			let n_h = findPart( 'HIGHLIGHTER' + n.data.key )
+			
+			if ( !n_h )  {
+				console.log( "Highliter of this node is null", n.data )
+			}
+			
+			else  {
+				n_h.visible = false
+				myFullDiagram.model.setDataProperty(n.data, "in_user_path", "false");
+			}
+			
+		myFullDiagram.commitTransaction("v")
+
+	} )
+
+	while (parent_node !== null)  {
+	
+		let h = findPart( 'HIGHLIGHTER' + parent_node.data.key )
+		
+		myFullDiagram.startTransaction("HL")
+		
+			myFullDiagram.scrollToRect(parent_node.actualBounds);
+						
+			h.location = parent_node.location;
+			h.visible = true
+			
+			//myFullDiagram.model.setDataProperty(parent_node.data, "in_user_path", "true");
+
+			parent_node = parent_node.findTreeParentNode();
+						
+		myFullDiagram.commitTransaction("HL")
+
+	}
+
+}
+
+nodes_data_arr = []
+function save_diagram()  {
+	myFullDiagram.nodes.each(function(n)  {   // Iterate all nodes in diagram
+		
+		console.log("N-USER-NODE", n.data.user_node, n.data.usr_title, n.data.usr_body, n.data.in_user_path)
+		
+		nodes_data_arr.push( {  
+				"key":    n.data.key,
+				"parent": n.data.parent,
+				"color":  n.data.gt_color,
+				"usr_title": n.data.usr_title,
+				"usr_body": n.data.usr_body,
+				"in_user_path": n.data.in_user_path,
+				} )
+							
+	} )	
+	
+	console.log("IN save_diagram nodes_data_arr", JSON.stringify(nodes_data_arr))
+	
+	jQuery.ajax( {   // FROM https://forum.nwoods.com/t/how-to-trigger-ajax-call-on-dropping-object-from-palette-to-diagram/8762/17
+		type: "POST",
+		url: '/save_usr_diagram',
+		contentType: 'application/json',
+		dataType : 'json',
+		
+		//data: nodes_data_arr,
+		data: JSON.stringify(nodes_data_arr),	
+		
+		
+		
+		} ).done(function (data) {
+				console.log("SAVE DONE ")
+			} );			
+}
+
+
+// FROM https://forum.nwoods.com/t/removing-a-part/7591/5
+function findPart(name) {
+	let it = myFullDiagram.parts;
+	while (it.next()) {
+		if (it.value.name === name) return it.value;
+	}
+	return null;
+}
+
+		
+  </script>
+</head>
+
+
+<body onload="init()">
+	<div id="menuDiagram" style="height:100px; idth:100%; border:5px solid green;"></div>
+
+	<div id="fullDiagram" style="height:900px; width:100%; border:1px solid black;"></div>
+</body>
+
+</html>
+{% endblock %}

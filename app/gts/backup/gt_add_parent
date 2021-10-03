@@ -1,0 +1,73 @@
+        
+@gt.route('/gt_add', methods=['GET', 'POST'])
+@login_required
+def gt_add():
+
+    #################import pdb; pdb.set_trace() 	
+    author_id = current_user._get_current_object().id
+			
+    if request.method == 'GET':
+        return render_template('add_gt.html')
+        
+    from_age = int(request.form.get('from_age'))
+    to_age = int(request.form.get('to_age'))     
+    
+    class_name = request.form.get('class_name')
+    
+    new_gt_title = request.form.get('title')
+    new_gt_body = request.form.get('body')
+    
+    gt = eval(class_name).query.filter(eval(class_name).title==new_gt_title).first()
+    if gt == None:
+        if class_name == 'Age_range':
+            gt = eval(class_name)(new_gt_title, new_gt_body, from_age, to_age, author_id)	
+        else:
+            gt = eval(class_name)(new_gt_title, new_gt_body, author_id)	
+    else:
+        flash ("This Category allready exist")
+        return edit_gts()
+        
+    gt.class_name = class_name
+    gt.gt_type = class_name
+    
+    gt.title = new_gt_title
+    gt.body = new_gt_body
+    
+    gt.h_name = request.form.get('h_name')
+    gt.e_name = request.form.get('e_name')
+        
+    gt.default = request.form.get('default')=='on'
+    
+    print("")
+    print("IN gt_add request.form.get('default'): ", request.form.get('default'))
+    print("IN gt_add from_age-to_age: ", from_age, to_age)
+    print("IN gt_add class_name: ", class_name)
+    print("")
+    print("")
+        
+    gt.color_txt = request.form.get('color_name_txt')
+    gt.color = get_color(gt.color_txt)
+    
+    db.session.add(gt)    
+
+    parent_title = request.form.get('parent')
+    if parent_title != '' and parent_title != []  and parent_title != None:        
+        parent_class_name = request.form.get('parent_class_name')
+        parent = eval(parent_class_name).query.filter(eval(parent_class_name).title==parent_title).first()
+        if parent != None: 
+            parent.set_parent(gt)
+    
+    child_title = request.form.get('child')
+    if child_title != '' and child_title != []  and child_title != None:        
+        child_class_name = request.form.get('child_class_name')
+        child = eval(child_class_name).query.filter(eval(child_class_name).title==child_title).first()
+        if child != None: 
+            gt.set_parent(child)
+
+    db.session.commit() 
+    
+    gt = general_txt_select2(gt.id)
+    flash ("קטגוריה {0} {1} הוספה בהצלחה!j".format(gt.class_name, gt.title))
+    url = url_for('gts.edit_gts')
+    return redirect(url)   
+	

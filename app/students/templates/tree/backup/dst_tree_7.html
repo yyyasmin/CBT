@@ -1,0 +1,258 @@
+
+{% extends "layout.html" %}
+
+	
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+
+{% with from_dst_sort_order=3 %} 
+	{% include "dst_title.html" %} 
+{% endwith %} 
+ 
+
+ <script id="code">
+
+    function init() {
+      if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
+      let $ = go.GraphObject.make;  // for conciseness in defining templates
+      
+	  myFullDiagram =
+        $(go.Diagram, "fullDiagram",  // each diagram refers to its DIV HTML element by id
+			{
+				initialAutoScale: go.Diagram.UniformToFill,  // automatically scale down to show whole tree
+				//maxScale: 0.80,
+
+				contentAlignment: go.Spot.Center,  // center the tree in the viewport
+				
+				layout: $(go.TreeLayout,
+				{ angle: 90, sorting: go.TreeLayout.SortingAscending } ),
+				maxSelectionCount: 1,  // only one node may be selected at a time in each diagram
+
+				// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/extensions/TextEditor.html
+				//"textEditingTool.defaultTextEditor": window.TextEditor,
+				
+				'undoManager.isEnabled': true, 
+				
+			} );
+
+
+	let myNodeTemplate =
+		$(go.Node, "Auto",
+			{ 	locationSpot: go.Spot.Center,
+				click: switchNodeColor,  },
+				//doubleClick: addNewNode,  },
+
+	<!-- FROM https://forum.nwoods.com/t/centering-textblocks-in-panels/7941/9  -->	
+			// FROM https://forum.nwoods.com/t/issues-with-adding-a-node-dynamically-on-button-click/14066
+			$( go.Panel, "Table",
+			
+			$(go.RowColumnDefinition, {row : 5, column : 5} ),
+			
+				new go.Binding("background", "fill_color"),
+						
+					$(go.Picture,
+						{  row : 0, column : 0,
+						   margin: 10, width: 60, height: 60, background: "red", alignment: go.Spot.Left, },
+						new go.Binding("source") ) ,
+							
+					$(go.TextBlock, {  
+						row : 1, column : 0,
+						margin: 5, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "name")  ),
+							
+					$(go.TextBlock, { 
+						row : 2, column : 0,					
+						margin: 5, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						new go.Binding("text", "key")  ),
+
+					$(go.TextBlock, {  
+						row : 3, column : 0,					
+						margin: 5, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						
+						new go.Binding("text", "status").makeTwoWay(),
+						new go.Binding("fill", "tb_fill_color").makeTwoWay(),
+						new go.Binding("fill", "color2").makeTwoWay(),
+						new go.Binding("stroke", "text_color").makeTwoWay(),	
+						new go.Binding("stroke", "gt_color").makeTwoWay(),										
+						new go.Binding("text", "class_name").makeTwoWay()  ),										
+
+			
+			// FROM https://gojs.net/latest/intro/selection.html
+
+					$(go.TextBlock, {  
+						row : 4, column : 0,					
+						margin: 5, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+	
+						new go.Binding("text", "key") ),  {
+			
+			
+						selectionAdornmentTemplate:
+						
+							$(go.Adornment, "Spot",
+							
+								$(go.Panel, "Auto",
+								// this Adornment has a rectangular blue Shape around the selected node
+								$(go.Shape, { fill: null, stroke: "dodgerblue", strokeWidth: 3 }),
+									$(go.Placeholder) ),
+
+								// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/incrementalTree.html
+								$("TreeExpanderButton",  {
+								//row: 4, column: 1,
+								//width: 30, height: 30,
+								alignment: go.Spot.Bottom,
+								alignmentFocus: go.Spot.Top,
+								name: 'NEWNODE',
+
+								// customize the expander behavior to
+								// create children if the node has never been expanded
+								click: addNewNode  },
+								$(go.TextBlock, "פתח חדש", { margin: 3 },  )  ),
+								
+							),  // END $(go.Adornment, "Spot",
+
+										
+						},  // END new go.Binding("text", "key") ),  
+						
+			),   // END Pane Table
+
+			
+        );
+		
+
+
+
+				
+		myFullDiagram.nodeTemplate = myNodeTemplate;
+
+		// Define a basic link template, not selectable
+		let myLinkTemplate =
+			$( go.Link,
+				{ routing: go.Link.Normal, selectable: false },
+				$(go.Shape,
+				{ strokeWidth: 2 } ),
+				{ curve: go.Link.Bezier },  // Bezier curve
+
+				$(go.Panel, "Horizontal", {
+					segmentOffset: new go.Point(0, -10),
+				} ),			
+			);
+
+		myFullDiagram.linkTemplate = myLinkTemplate;
+
+
+		setupDiagram();
+		
+	}
+	
+
+// FROM https://gojs.net/latest/intro/selection.html
+function addNodeAndLink(e, b) {
+	// take a button panel in an Adornment, get its Adornment, and then get its adorned Node
+	let node = b.part.adornedPart;
+	// we are modifying the model, so conduct a transaction
+	let diagram = node.diagram;
+	diagram.startTransaction("add node and link");
+	// have the Model add the node data
+	let newnode = { key: "N" };
+	diagram.model.addNodeData(newnode);
+	// locate the node initially where the parent node is
+	diagram.findNodeForData(newnode).location = node.location;
+	// and then add a link data connecting the original node with the new one
+	let newlink = { from: node.data.key, to: newnode.key };
+	diagram.model.addLinkData(newlink);
+	// finish the transaction -- will automatically perform a layout
+	diagram.commitTransaction("add node and link");
+}
+
+
+	
+// FROM https://forum.nwoods.com/t/dynamically-created-nodes-are-overlapping/9226
+function addNewNode(e, selected_node) {
+
+	let m = myFullDiagram.model
+	//let newNodeData
+	//let newlink
+	
+	console.log("SELECTED NODE-PART ", selected_node.part.data.class_name )
+	
+	/*********************************
+	let new_gt = create_new_gt( selected_node.data.class_name )  // LET SERVER CREATE NEW GT WITH THE REQUESTED CLASS
+	
+	newNodeData =  {
+			key:         gt.id,
+			parent:      new_gt.id, 
+
+			fill_color:  new_gt.color,
+			gt_color:    new_gt.color,
+			source:      new_gt.image_url,
+			name:        new_gt.title,			
+		}
+	
+	m.addNodeData( newNodeData );  // this makes sure the key is unique
+	
+	//m.addLinkData(newlink);    
+
+	m.commitTransaction("add node and link");
+	******************************************/
+}
+	  
+	  
+// SWITCH NODE BETWEEN GRAY AND COLOR
+function switchNodeColor(e, selected_node) {
+
+	let m = myFullDiagram.model
+	
+	m.startTransaction("changeNodeColor");
+	
+	if (selected_node.data.fill_color == "lightgray")
+		m.setDataProperty(selected_node.data, "fill_color", selected_node.data.gt_color); //Retrieve the original dat	
+	else	
+		m.setDataProperty(selected_node.data, "fill_color", "lightgray"); //GRAY THE NODE	
+	
+	m.commitTransaction("changeNodeColor");
+	
+}	
+
+	
+let nodeDataArray = [];	
+function setupDiagram() {
+	
+	
+	let student_dsts = {{ student_dsts | safe }} 		
+	for ( let i=0; i< student_dsts.length; i++ )  {  // DESTINATIONS
+		let dest = student_dsts[i]										
+		{% include './tree/dst_tree_dst_data.js' %}
+		
+		let dst_goals = {{dst_goals | safe}}			
+		for ( let j=0; j< dst_goals.length; j++ )  {  // GOALS
+			let goal = dst_goals[j]
+			{% include './tree/dst_tree_goal_data.js' %}
+			
+			let dst_todos = {{dst_todos | safe}}
+			for ( let k=0; k<dst_todos.length; k++ )  {  // TODOS
+				let todo = dst_todos[k]
+				{% include './tree/dst_tree_todo_data.js' %}
+			}  //TODOS	
+			
+		}  //GOALS		
+		
+	}  // DESTINATIONS
+	
+	myFullDiagram.model = new go.TreeModel(nodeDataArray);
+
+}
+	
+  </script>
+</head>
+
+
+<body onload="init()">
+	<div id="fullDiagram" style="height:900px; width:100%; border:1px solid black;"></div>
+</body>
+
+</html>
+{% endblock %}

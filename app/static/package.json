@@ -1,0 +1,32 @@
+{
+  "name": "menta-idanim",
+  "version": "1.0.0",
+  "description": "goals and totdos educational therapy program",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --progress --config webpack.config.js",
+    "dev-build": "webpack --progress -d --config webpack.config.js",
+    "watch": "webpack --progress -d --config webpack.config.js --watch"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-react": "^7.12.10",
+    "babel-loader": "^8.2.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "webpack": "^5.16.0",
+    "webpack-cli": "^4.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yyyasmin/menta/tree/master"
+  },
+  "keywords": [
+    "python",
+    "flask",
+    "react"
+  ],
+  "author": "yasmin amran",
+  "license": "ISC"
+}

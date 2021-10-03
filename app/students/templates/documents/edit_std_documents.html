@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+
+</style>
+
+
+{% with student = std %} 
+{% include "std_title.html" %} 
+{% endwith %} 
+
+</br></br>
+
+<div class="w3-container" id="container_id">
+
+	<button class="btn btn-info btn-xs" id="add_button"><h5><strong>	
+		<a href="{{ url_for('students.document_to_student_add2', selected_student_id=std.id) }}">העלה קובץ חדש</a>
+	<strong></h5></button>
+	</br></br>
+	
+
+	<h2><strong><center><div>מסמכים</div></center></strong></h2>
+	<p></p>
+	
+	
+	<br>
+	
+	<p></p>
+	
+	<div>	
+	
+		{% for document in std.general_txts if document.general_txt.class_name == 'Document' %}
+			
+			<div> DOCUMENT: {{document}} </div>
+			<div> DOCUMENT.GENERAL_TXT_ID: {{document.general_txt_id}} </div>
+			<div> document.general_txt.ufile_id: {{document.general_txt.ufile_id}} </div>
+			
+			<button class="btn btn-warning btn-xs" id="edit_list_id"><a href="{{ url_for('documents.document_upload_new_file2', selected_document_id=document.general_txt_id) }}">ערוך קובץ</a></button>			
+			<button class="btn btn-warning btn-xs" id="edit_sub_list_id"><a href="{{ url_for('documents.download_document_file2', selected_document_id=document.general_txt_id) }}">הורד קובץ</a></button>						
+			<button class="btn btn-danger btn-xs"  id="delete_id"><a href="{{ url_for('students.document_from_student_delete2', selected_student_id=std.id, selected_document_id=document.general_txt_id) }}">מחק</a></button>		
+						
+			<button class="accordion"> שם המסמך:  {{ document.general_txt.title }}</button>			
+			<div class="panel">
+			  <p class="white_ppp"> תאור המסמך: {{ document.general_txt.body }} </p>
+			</div>
+
+			</br>			
+
+		{% endfor %}
+		
+		</br>
+
+	</div>   <!-- container -->
+	
+	
+	
+<script type="text/javascript" src="{{ url_for('static', filename='js/tree_list_plus.js') }}"></script>
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].onclick = function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.maxHeight){
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    } 
+  }
+}
+</script>
+
+
+
+{% endblock %}

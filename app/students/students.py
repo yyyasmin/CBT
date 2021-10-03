@@ -125,15 +125,15 @@ def show_student_tree():
     gts_arr = []
     
     #DEBUG TO BE DELETED
-    gts = General_txt.query.all()
+    gts = General_txt.query.filter(General_txt.hide==False).all()
     for gt in gts:
         if gt.title == "Enter your title":
             gt.used = False
-            print("DEBUG GT", gt)
+            print("DDDDDDDDDDDeleting DEBUG GT", gt)
             print("")
 
-            db.session.delete(gt)
-            db.session.commit()
+            #db.session.delete(gt)
+            #db.session.commit()
         else:
             gt.used = True
     db.session.commit()

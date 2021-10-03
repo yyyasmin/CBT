@@ -6,14 +6,15 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     
 
-    #SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-    #'postgresql://postgres:postgres@localhost:5432/menta'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+    'postgresql://postgres:postgres@localhost:5432/menta'
 
-
+    '''
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', '').replace(
         'postgres://', 'postgresql://') or \
         'postgresql://postgres:postgres@localhost:5432/menta'
-        
+    '''
+    
     #FROM https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xxii-background-jobs
     #REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'   
         

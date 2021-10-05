@@ -166,6 +166,8 @@ class General_txt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = datetime.utcnow()
 
+    prnt_id =  db.Column(db.Integer, nullable=True)
+    
     ufile_id =  db.Column(db.Integer, db.ForeignKey('ufile.id'), nullable=True)
  
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -183,7 +185,7 @@ class General_txt(db.Model):
     body =  db.Column(db.String(1000))
     default = db.Column(db.Boolean)
     
-    json = db.Column(db.JSON)
+    #json = db.Column(db.JSON)
     
     color_txt = db.Column(db.String(50),   nullable=True)
     color = db.Column(db.String(50),       nullable=True)
@@ -262,6 +264,8 @@ class General_txt(db.Model):
                                         
     def __init__(self ,title, body, author_id):
             
+        self.prnt_id = 0
+        
         self.title = title
         self.body = body
         

@@ -21,8 +21,9 @@
 		
 		nodeDataArray.push( {
 			key: behavior.id,
-			parent: emotion.id,
-
+			//parent: emotion.id,
+			parent: behavior.prnt_id,
+			
 			fill_color: behavior.color,
 			gt_color: behavior.color,
 			source:  behavior.image_url,

@@ -61,12 +61,20 @@ def edit_gts():
         return render_template('edit_gts.html', gts=gts)
     #IN CASE OF POST IT COMES FROM SEARCH BT CLASS NAME
     
-    class_name = request.form.get('class_name')
+    class_name = request.form.get('class_name')  # IN CASe OF POST IT COMES FROM SEARCH
     
     print("SEARCHING FOR CLASS: ", class_name)
     
     gts = filter_by_class_name(class_name)
     
+    print("IN edit_gts GTS BY-CLASS: ", gts)
+    
+    if gts==None or gts==[]:
+        id_to_find_by =class_name
+        gts = filter_by_id(id_to_find_by)
+        
+        print("IN edit_gts GTS BY-ID: ", gts)
+        
     return render_template('edit_gts.html', gts=gts)
     '''
     print("")
@@ -90,6 +98,15 @@ def filter_by_class_name(class_name):
     #DEBUG ONLY
     #DEBUG ONLY    
     return General_txt.query.filter(General_txt.hide==False).filter(General_txt.class_name.isnot_distinct_from(class_name)).all() 
+  																		
+
+@gt.route('/filter_by_id', methods=['GET', 'POST'])
+@login_required
+def filter_by_id(id):
+
+    #DEBUG ONLY
+    #DEBUG ONLY    
+    return General_txt.query.filter(General_txt.hide==False).filter(General_txt.id.isnot_distinct_from(id)).all() 
     
         
 @gt.route('/add_child_to_gt<int:gt_id>/<int:child_gt_id>', methods=['GET', 'POST'])
@@ -104,13 +121,17 @@ def add_child_to_gt(gt_id, child_gt_id):
     if child_gt_id == 0:        
         gts = General_txt.query.filter(General_txt.hide==False).order_by(General_txt.title).all()
         return render_template('add_or_remove_child.html', gt=gt, gts=gts)
-        
+                   
     child_gt = General_txt.query.filter(General_txt.id == child_gt_id).first()
+    child_gt.prnt_id = gt.id
+    
+    db.session.commit() 
+
     gt.set_parent(child_gt)
         
     db.session.commit() 
         
-    flash ("Child {0} added to Parent gt {1} successfully ".format(child_gt.title, gt.title))
+    flash ("Child {0} Child {1} added to Parent gt {2} Child {3}  successfully ".format(child_gt.id, child_gt.title,  gt.id, gt.title))
     
     return redirect(url_for('gts.edit_gts'))   
 
@@ -144,7 +165,8 @@ def remove_child_from_gt(gt_id, child_gt_id):
         return render_template('add_or_remove_child.html', gt=gt, gts=gt_children)
          
     child_gt = General_txt.query.filter(General_txt.id == child_gt_id).first()
-    gt.unset_parent(child_gt)    
+    child_gt.prnt_id = 0
+    gt.unset_parent(child_gt) 
     
     db.session.commit() 
         

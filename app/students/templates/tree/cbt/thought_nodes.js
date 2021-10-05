@@ -1,10 +1,9 @@
 {% block thought_data_3 %}
-		
-	console.log("thought.parent_id", thought.parent_id)
-	
+			
 	nodeDataArray.push( {
 		key: thought.id,
-		parent: situation.id,
+		//parent: situation.id,
+		parent: thought.prnt_id,
 
 		fill_color: thought.color,
 		gt_color: thought.color,

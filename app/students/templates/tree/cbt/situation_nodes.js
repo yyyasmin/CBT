@@ -3,7 +3,8 @@
 	
 	nodeDataArray.push( {
 		key: situation.id,
-		parent: 0, 
+		//parent: 0, 
+		parent: situation.prnt_id,
 
 		fill_color:  situation.color,
 		gt_color:    situation.color,

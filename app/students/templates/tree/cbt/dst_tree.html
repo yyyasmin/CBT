@@ -81,13 +81,15 @@
 						editable: true,
 						row : 3, column : 1,					
 						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
-						new go.Binding("text", "usr_title" ).makeTwoWay() ),
+						//new go.Binding("text", "usr_title" ).makeTwoWay() ),
+						new go.Binding("text", "title" ).makeTwoWay() ),
 							
 					$(go.TextBlock, { 
 						editable: true,
 						row : 4, column : 1,					
 						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
-						new go.Binding("text", "usr_body" ).makeTwoWay() ),
+						//new go.Binding("text", "usr_body" ).makeTwoWay() ),
+						new go.Binding("text", "body" ).makeTwoWay() ),
 	
 					$(go.TextBlock, {  
 						row : 5, column : 0,					
@@ -359,7 +361,9 @@ function addNewNode(e, selected_node) {
 		
 		newNodeData =  {
 				key:         new_gt.id,
-				parent:      a_node.key,
+				//parent:     a_node.key,
+				parent:      new_gt.prnt_id,
+				
 				source:      new_gt.image_url,
 				h_name:      new_gt.h_name,
 				
@@ -371,12 +375,13 @@ function addNewNode(e, selected_node) {
 				gt_color:    new_gt.color,
 				
 				//name:   new_gt.title,	
-				usr_title:   new_gt.title,	
-				usr_body:    new_gt.body,
-				in_user_path: "false",
-				
+				title:   new_gt.title,	
+				body:    new_gt.body,
+				in_user_path: "false",				
 							
 			}
+			
+		//nodesCreatedByUsr.push( newNodeData )
 		
 		m.addNodeData( newNodeData );  // this makes sure the key is unique
 							
@@ -400,7 +405,15 @@ function switchNodeColor(e, selected_node) {
 	m.startTransaction("changeNodeColor");	
 
 	if (selected_node.data.user_node == "true")  {  // USER PRIVATE NODE
-		m.setDataProperty(selected_node.data, "fill_color", color_choices_arr[color_idx%7]);
+		let new_color = color_choices_arr[color_idx%7]
+		m.setDataProperty(selected_node.data, "fill_color", new_color );
+		
+		console.log("IN switchNodeColor selected_node.data 11111: ", selected_node.data)
+
+		m.setDataProperty(selected_node.data, "gt_color", new_color );
+		
+		console.log("IN switchNodeColor selected_node.data 22222: ", selected_node.data)
+		
 		color_idx++
 	}
 	
@@ -422,6 +435,8 @@ function switchNodeColor(e, selected_node) {
 let node_highlighter_id_arr = []				
 let nodeDataArray = [];
 let nodesKeyPushed = [];
+let nodesCreatedByUsr = [];
+
 function setupDiagram() {
 		
 	let situations = {{ situations | safe }}
@@ -433,13 +448,13 @@ function setupDiagram() {
 		let thoughts = {{thoughts | safe}}			
 		for ( let j=0; j< thoughts.length; j++ )  {  // THOGHTS
 			let thought = thoughts[j]
-			if ( thought.parent_id == situation.id)  {
+			if ( thought.prnt_id == situation.id)  {
 				{% include './tree/cbt/thought_nodes.js' %}
 			}
 			let emotions = {{emotions | safe}}
 			for ( let k=0; k<emotions.length; k++ )  {  // EMOTIONS
 				let emotion = emotions[k]
-				if (emotion.parent_id == thought.id && emotion.color == thought.color && emotion.id>0 && emotion.parent_id>0)  {
+				if (emotion.prnt_id == thought.id && emotion.id>0 && emotion.prnt_id>0)  {
 					{% include './tree/cbt/emotion_nodes.js' %}
 				}
 				
@@ -447,7 +462,7 @@ function setupDiagram() {
 				for ( let m=0; m<behaviors.length; m++ )  {  // BEHAVIORS
 					let behavior = behaviors[m]
 					
-						if ( (behavior.parent_id == emotion.id) && (behavior.color == emotion.color) && (behavior.id>0) && (behavior.parent_id>0) )  {
+						if ( (behavior.prnt_id == emotion.id) && (behavior.color == emotion.color) && (behavior.id>0) && (behavior.prnt_id>0) )  {
 							
 							//console.log("BBBBBBBBBBBBBBBBBB BEHAVIOR", behavior)
 
@@ -457,7 +472,7 @@ function setupDiagram() {
 					let results = {{results | safe}}
 					for ( let n=0; n<results.length;n++ )  {  // RESULTS
 						let result = results[n]
-						if (result.parent_id == behavior.id && result.color == behavior.color && result.id>0 && result.parent_id>0)  {
+						if (result.prnt_id == behavior.id && result.color == behavior.color && result.id>0 && result.prnt_id>0)  {
 							{% include './tree/cbt/result_nodes.js' %}
 						}
 					}  //RESULTS
@@ -507,10 +522,16 @@ function highlightUsrNodesPath(e, selected_node) {
 			myFullDiagram.scrollToRect(parent_node.actualBounds);
 						
 			h.location = parent_node.location;
+			
+			parent_node.data.in_user_path = "true"
+			
+			
 			h.visible = true
 			
-			//myFullDiagram.model.setDataProperty(parent_node.data, "in_user_path", "true");
-
+			myFullDiagram.model.setDataProperty(parent_node.data, "in_user_path", "true");
+			
+			console.log("IN highlightUsrNodesPath parent_node: ", parent_node.data)
+			
 			parent_node = parent_node.findTreeParentNode();
 						
 		myFullDiagram.commitTransaction("HL")
@@ -519,25 +540,36 @@ function highlightUsrNodesPath(e, selected_node) {
 
 }
 
-nodes_data_arr = []
+usr_nodes_data_arr = []
 function save_diagram()  {
+
 	myFullDiagram.nodes.each(function(n)  {   // Iterate all nodes in diagram
 		
-		//console.log("N-USER-NODE", n.data.user_node, n.data.usr_title, n.data.usr_body, n.data.in_user_path)
+		if ( n.data.user_node=="false")  {   // SEnd ONLY USER CREATED NODES 
+			console.log("THIS IS ANOT A USER-NODE --- NOT SENDING: ", n.data)
+		}
 		
-		nodes_data_arr.push( {  
-				"key":    n.data.key,
-				"parent": n.data.parent,
-				"color":  n.data.gt_color,
-				"usr_title": n.data.usr_title,
-				"usr_body": n.data.usr_body,
-				"in_user_path": n.data.in_user_path,
-				"node_pushed": n.data.node_pushed,
-				} )
-							
-	} )	
+		else  {   // SEnd ONLY USER CREATED NODES
+		
+			console.log("N", n.data)
+									
+			usr_nodes_data_arr.push( {  
+					"key":         n.data.key,
+					"parnt_id":    n.data.parent,
+					"parent": n.data.parent,
+					"color":  n.data.fill_color,
+					"title":  n.data.title,
+					"body":   n.data.body,
+					"image_url":   n.data.image_url,
+					"in_user_path": n.data.in_user_path,
+					"node_pushed": n.data.node_pushed,
+					} )
+								
+		}
+		
+	} )
 	
-	//console.log("IN save_diagram nodes_data_arr", JSON.stringify(nodes_data_arr))
+	console.log("IN save_diagram usr_nodes_data_arr", JSON.stringify(usr_nodes_data_arr))
 	
 	jQuery.ajax( {   // FROM https://forum.nwoods.com/t/how-to-trigger-ajax-call-on-dropping-object-from-palette-to-diagram/8762/17
 		type: "POST",
@@ -545,8 +577,7 @@ function save_diagram()  {
 		contentType: 'application/json',
 		dataType : 'json',
 		
-		//data: nodes_data_arr,
-		data: JSON.stringify(nodes_data_arr),	
+		data: JSON.stringify(usr_nodes_data_arr),	
 		
 		
 		

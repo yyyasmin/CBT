@@ -125,65 +125,62 @@ def show_student_tree():
     
     situations = []
     situation_new_nodes = []
+            
+    thoughts = []
+    thoughts_new_nodes = []
+                        
+    emotions = []
+    emotions_new_nodes = []
+                
+    behaviors = []
+    behaviors_new_nodes = []
+                                                        
+    results = []
+    results_new_nodes = []
+
     tmp_situations = Situation.query.filter(Situation.hide == False).filter(Situation.title != "Enter your title").all()
     for s in tmp_situations:
         situations.append( set_gt_node(s, 0, False) )  # DUMMY tmp_situations should be students
         situation_new_nodes.append( set_gt_node(s, 0, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
-    gts_arr.append( situations )
-    gts_arr.append( situation_new_nodes )
 
-        
-    thoughts = []
-    thoughts_new_nodes = []
-    tmp_thoughts = Thought.query.filter(Thought.hide == False).filter(Thought.title != "Enter your title").all()
-    for s in tmp_thoughts:
-        ts = set_gt_node(s, tmp_situations, False)
-        if ts !=0:
-            thoughts.append( ts )
-            thoughts_new_nodes.append( set_gt_node(s, tmp_situations, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
-    gts_arr.append( thoughts )
-    gts_arr.append( thoughts_new_nodes )
-                    
-    emotions = []
-    emotions_new_nodes = []
-    tmp_emotions = Emotion.query.filter(Emotion.hide == False).filter(Emotion.title != "Enter your title").all()
-    for s in tmp_emotions:
-        ts = set_gt_node(s, tmp_thoughts, False)
-        if ts != 0:
-            emotions.append( ts )
-            emotions_new_nodes.append( set_gt_node(s, tmp_thoughts, True) )
-    gts_arr.append( emotions )
-    gts_arr.append( emotions_new_nodes )
-        
-    behaviors = []
-    behaviors_new_nodes = []
-    tmp_behaviors = Behavior.query.filter(Behavior.hide == False).filter(Behavior.title != "Enter your title").all()        
-    for s in tmp_behaviors:
-        ts = set_gt_node(s, tmp_emotions, False)
-        if ts !=0:
-            behaviors.append( ts )
-            behaviors_new_nodes.append( set_gt_node(s, tmp_emotions, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
-    gts_arr.append( behaviors )
-    gts_arr.append( behaviors_new_nodes )
-            
-    results = []
-    results_new_nodes = []
-    tmp_results = Result.query.filter(Result.hide == False).filter(Result.title != "Enter your title").all()
-    for s in tmp_results:
-        ts = set_gt_node(s, tmp_behaviors, False)
-        if ts != 0:
-            results.append( ts )
-            results_new_nodes.append( set_gt_node(s, tmp_behaviors, True) )
-    gts_arr.append( results )
-    gts_arr.append( results_new_nodes )
+
+        tmp_thoughts = Thought.query.filter(Thought.hide == False).filter(Thought.title != "Enter your title").all()
+        for s in tmp_thoughts:
+            ts = set_gt_node(s, tmp_situations, False)
+            if ts !=0:
+                thoughts.append( ts )
+                thoughts_new_nodes.append( set_gt_node(s, tmp_situations, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+             
+                tmp_emotions = Emotion.query.filter(Emotion.hide == False).filter(Emotion.title != "Enter your title").filter(Emotion.prnt_id == s.id).all()
+                for s in tmp_emotions:
+                    ts = set_gt_node(s, tmp_thoughts, False)
+                    if ts != 0:
+                        emotions.append( ts )
+                        emotions_new_nodes.append( set_gt_node(s, tmp_thoughts, True) )
+
+                        tmp_behaviors = Behavior.query.filter(Behavior.hide == False).filter(Behavior.title != "Enter your title").filter(Behavior.prnt_id == s.id).all()        
+                        for s in tmp_behaviors:
+                            ts = set_gt_node(s, tmp_emotions, False)
+                            if ts !=0:
+                                behaviors.append( ts )
+                                behaviors_new_nodes.append( set_gt_node(s, tmp_emotions, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+                             
+                                tmp_results = Result.query.filter(Result.hide == False).filter(Result.title != "Enter your title").filter(Result.prnt_id == s.id).all()
+                                for s in tmp_results:
+                                    ts = set_gt_node(s, tmp_behaviors, False)
+                                    if ts != 0:
+                                        results.append( ts )
+                                        results_new_nodes.append( set_gt_node(s, tmp_behaviors, True) )
 
     statuss = []
     for s in Status.query.all():
         statuss.appens(s)
-
-    print("emotions_new_nodes", emotions_new_nodes)
-    print("")
-            
+        
+    print("")        
+    print("emotions", emotions)
+    print("")        
+			         
+                
     print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
     
     return render_template('./tree/cbt/dst_tree.html',  
@@ -211,87 +208,103 @@ def save_usr_diagram():
         print("DATA-KEY: ", d["key"])
         print("DATA-PARENT: ", d["parent"])
         print("DATA-COLOR: ", d["color"])
-        #print("DATA-LINE: ", d["usr_title"])
-        #print("DATA-LINE: ", d["usr_body"])
-        #print("DATA-LINE: ", d["in_user_path"])
+        print("DATA-LINE: ", d["title"])
+        print("DATA-LINE: ", d["body"])
+        print("DATA-LINE: ", d["in_user_path"])
         print("")
 
-    print("")   
-    
-
-
+        user_gt = General_txt.query.filter( General_txt.id == d["key"] ).first()
         
+        print("UPDATING USER-GT GT_COLOR", user_gt, user_gt.prnt_id)
+        
+        user_gt.title = d["title"]
+        user_gt.body = d["body"]
+        user_gt.color = d["color"]
+        user_gt.color_txt = d["color"]
+        user_gt.color_txt = d["color"]
+        user_gt.image_url = d["in_user_path"]
+        user_gt.hide = False
+        user_gt.used = True
+        
+        print("UPDATING USER-GT: ", user_gt)
+        print("")
+        
+        db.session.commit()
+        
+        print("")
+        
+    return show_student_tree()
+    
+    '''    
     dmmy_array = ["dummy"]
     
-    print( jsonify( { 'save_d': dmmy_array } ) ) 
+    res = jsonify( { 'save_d': dmmy_array } )
     
-    return jsonify( { 'save_d': dmmy_array } )
-
+    print( "RES", res )
+    print("")
+    
+    return res
+    '''
 
 @std.route('/set_gt_node', methods=['GET', 'POST'])
 @login_required
 def set_gt_node(gt, parent_arr, is_new_usr_gt):
 
-    new_gt_struct = gt
+    #DEBUG TO BE DELETED
+    '''
+    gts = General_txt.query.all()
+    for g in gts:
+        g.hide=False
+        db.session.commit()
+    '''    
+    #DEBUG TO BE DELETED
+            
+    empty_gts = General_txt.query.filter(General_txt.title == "Enter your title" or General_txt.color=="lightgray" ).all()
+    for e in empty_gts:
+        db.session.delete(e)
+        db.session.commit()
+ 
     
-    print("")
-    print("IN set_gt_node gt -- is_new_usr_gt: ",is_new_usr_gt)
-
+    new_gt_struct = gt
+                        
     if is_new_usr_gt:
         num_of_new_usr_gt_of_this_class =  eval(gt.class_name).query.filter(eval(gt.class_name).hide==False).filter(eval(gt.class_name).title == "Enter your title").count()
         
-        print("new_gt_struct, num_of_new_usr_gt_of_this_class" ,new_gt_struct, num_of_new_usr_gt_of_this_class)
-        print("")
         
         new_gt = eval(gt.class_name)("Enter your title", "Enter your description", get_author_id() )
         db.session.add(new_gt)
         new_gt.used = False
         new_gt.color = "lightgray"
         new_gt.image_url = url_for( 'static', filename = 'img/' + gt.gt_type + '/' + new_gt.image_url ),
+        new_gt.prnt_id = gt.prnt_id
         db.session.commit() 
-        
-        print("CREATED NEW GT ", new_gt)
-        print("")
-             
+                     
         new_gt_struct = new_gt
-        
-    parent_id = 0
 
-    if parent_arr != 0:
-        for p in parent_arr:
-            if p.is_parent_of(gt):
-                parent_id = p.id
-                break
-                
-    if gt.class_name!='Situation' and parent_id==0 and parent_arr!=0:
-        return 0
-  
-    print("IN new_gt_struct parent_id   new_gt_struct ", new_gt_struct)
-    print("")
-    print("")
-        
+       
     node_struct =   {   
         "class_name": new_gt_struct.class_name, 
         "gt_type":    new_gt_struct.gt_type, 
         "method":     new_gt_struct.gt_type, 
         "id":         new_gt_struct.id,
+        
         "title":      new_gt_struct.title,
         "body":       new_gt_struct.body ,
+        
         "h_name":     new_gt_struct.h_name ,
         "e_name":     new_gt_struct.e_name ,
         "color":      new_gt_struct.color ,
         "image_url":  new_gt_struct.image_url ,
-        "parent_id":  parent_id,
+        "prnt_id":    new_gt_struct.prnt_id ,
                 		
-		#"user_node":    user_node,
 		"in_user_path": "false",
 		"node_pushed":  "false",
 
         "CHILDREN" :  [],
         "BROTHERS" :  [],
         "NEW-CHILDREN": [],
-    }
-    
+    }    
+        
     return node_struct
 
 

@@ -146,32 +146,42 @@ def show_student_tree():
 
 
         tmp_thoughts = Thought.query.filter(Thought.hide == False).filter(Thought.title != "Enter your title").all()
-        for s in tmp_thoughts:
-            ts = set_gt_node(s, tmp_situations, False)
+        
+        print("")
+        print("tmp_thoughts", tmp_thoughts)
+        print("s.children", s.children)
+        print("")
+        
+        for t in tmp_thoughts:
+            t.prnt_id = s.id
+            ts = set_gt_node(t, tmp_situations, False)
             if ts !=0:
                 thoughts.append( ts )
-                thoughts_new_nodes.append( set_gt_node(s, tmp_situations, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+                thoughts_new_nodes.append( set_gt_node(t, tmp_situations, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
              
-                tmp_emotions = Emotion.query.filter(Emotion.hide == False).filter(Emotion.title != "Enter your title").filter(Emotion.prnt_id == s.id).all()
-                for s in tmp_emotions:
-                    ts = set_gt_node(s, tmp_thoughts, False)
+                tmp_emotions = Emotion.query.filter(Emotion.hide == False).filter(Emotion.title != "Enter your title").all()
+                for e in tmp_emotions:
+                    e.prnt_id = t.id
+                    ts = set_gt_node(e, tmp_thoughts, False)
                     if ts != 0:
                         emotions.append( ts )
-                        emotions_new_nodes.append( set_gt_node(s, tmp_thoughts, True) )
+                        emotions_new_nodes.append( set_gt_node(e, tmp_thoughts, True) )
 
-                        tmp_behaviors = Behavior.query.filter(Behavior.hide == False).filter(Behavior.title != "Enter your title").filter(Behavior.prnt_id == s.id).all()        
-                        for s in tmp_behaviors:
-                            ts = set_gt_node(s, tmp_emotions, False)
+                        tmp_behaviors = Behavior.query.filter(Behavior.hide == False).filter(Behavior.title != "Enter your title").all()                        
+                        for b in tmp_behaviors:
+                            b.prnt_id = e.id
+                            ts = set_gt_node(b, tmp_emotions, False)
                             if ts !=0:
                                 behaviors.append( ts )
-                                behaviors_new_nodes.append( set_gt_node(s, tmp_emotions, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+                                behaviors_new_nodes.append( set_gt_node(b, tmp_emotions, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
                              
-                                tmp_results = Result.query.filter(Result.hide == False).filter(Result.title != "Enter your title").filter(Result.prnt_id == s.id).all()
-                                for s in tmp_results:
-                                    ts = set_gt_node(s, tmp_behaviors, False)
+                                tmp_results = Result.query.filter(Result.hide == False).filter(Result.title != "Enter your title").all()
+                                for r in tmp_results:
+                                    r.prnt_id = b.id
+                                    ts = set_gt_node(r, tmp_behaviors, False)
                                     if ts != 0:
                                         results.append( ts )
-                                        results_new_nodes.append( set_gt_node(s, tmp_behaviors, True) )
+                                        results_new_nodes.append( set_gt_node(r, tmp_behaviors, True) )
 
     statuss = []
     for s in Status.query.all():

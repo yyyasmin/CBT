@@ -140,6 +140,7 @@ def show_student_tree():
 
     tmp_situations = Situation.query.filter(Situation.hide == False).filter(Situation.title != "Enter your title").all()
     for s in tmp_situations:
+        s.prnt_id = 0
         situations.append( set_gt_node(s, 0, False) )  # DUMMY tmp_situations should be students
         situation_new_nodes.append( set_gt_node(s, 0, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
 

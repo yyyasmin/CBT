@@ -177,6 +177,14 @@ def show_student_tree():
         statuss.appens(s)
         
     print("")        
+    print("situations", situations)
+    print("")        
+        
+    print("")        
+    print("thoughts", thoughts)
+    print("")        
+        
+    print("")        
     print("emotions", emotions)
     print("")        
 			         

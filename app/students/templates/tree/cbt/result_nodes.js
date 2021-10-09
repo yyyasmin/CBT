@@ -1,6 +1,6 @@
 {% block results_data_3 %}
 	
-	result_already_in_diagram = false
+	let result_already_in_diagram = false
 	
 	console.log ("IN RESULT NODE nodesKeyPushed:", nodesKeyPushed)
 	

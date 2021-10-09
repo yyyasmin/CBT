@@ -1,6 +1,6 @@
 {% block emotions_data_3 %}
 	
-	emotion_already_in_diagram = false
+	let emotion_already_in_diagram = false
 	
 	console.log ("IN EMOTION NODE emotion:", emotion)
 	

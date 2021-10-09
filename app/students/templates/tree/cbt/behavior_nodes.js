@@ -1,6 +1,6 @@
 {% block behaviors_data_3 %}
 	
-	behavior_already_in_diagram = false
+	let behavior_already_in_diagram = false
 	
 	console.log ("IN BEHAVIOR NODE nodesKeyPushed:", nodesKeyPushed)
 	

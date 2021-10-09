@@ -188,7 +188,7 @@
 		myFullDiagram.nodes.each(function(n)  {  // HIGHLITER FOR EACH PUBLIC NODE
 			// FROM https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/localView.html
 			
-			//console.log("N-DATA", n.visible, n.data.key, n.data.name)
+			////console.log("N-DATA", n.visible, n.data.key, n.data.name)
 			
 			let n_hl_name = "HIGHLIGHTER" + n.data.key
 			
@@ -218,10 +218,10 @@
 		for ( let i=0; i<all_new_gts.length; i++ )  {  // HIGHLITER FOR EACH USER NODE
 			
 			n = all_new_gts[i]
-			//console.log("GT", n, n.id)
+			////console.log("GT", n, n.id)
 			
 			let n_hl_name = "HIGHLIGHTER" + n.id
-			//console.log("USER HIGh-Lighter-NAME ", n_hl_name)
+			////console.log("USER HIGh-Lighter-NAME ", n_hl_name)
 			
 			let highlighter = 
 			
@@ -248,8 +248,6 @@
 	}  // END init
 
 
-
-let highlighter
 		
 // FROM https://forum.nwoods.com/t/dynamically-created-nodes-are-overlapping/9226
 function addNewNode(e, selected_node) {
@@ -258,24 +256,22 @@ function addNewNode(e, selected_node) {
 	let newNodeData
 	//let newlink
 	let new_gts_arr
-	
-	
-	let a_node = selected_node.part.adornedPart;
-	
-	//console.log("IN addNewNode A-NODE-DATA ", a_node.data )
-	
+		
+
+	let a_node = selected_node.part.adornedPart
+			
 	myFullDiagram.startTransaction("addNode");
 			
 		let cn = a_node.data.class_name
 		
-		console.log("IN NEW NODE SWITCH A-NODE CN: ", a_node.data , cn )
+		//console.log("IN NEW NODE SWITCH A-NODE CN: ", a_node.data , cn )
 		
 		switch(cn)  {
 		
 			case "Person":
 				new_gts_arr = {{ situations_new_nodes | safe }}
 				
-				console.log("SWITCH PERSN new_gts_arr", new_gts_arr)
+				//console.log("SWITCH PERSN new_gts_arr", new_gts_arr)
 								
 				/*************/
 				if (!new_gts_arr) {
@@ -285,12 +281,12 @@ function addNewNode(e, selected_node) {
 				/****************/
 				
 				new_gt = new_gts_arr.pop()
-				//console.log("new_gt", new_gt)
+				////console.log("new_gt", new_gt)
 				break;
 			
 			case "Situation":
 				new_gts_arr = {{ thoughts_new_nodes | safe }}
-				console.log("new_gts_arr", new_gts_arr)
+				//console.log("new_gts_arr", new_gts_arr)
 				
 				if (new_gts_arr==undefined || !new_gts_arr || new_gts_arr.length <= 0) {
 					alert("NO more new nodes aloud", new_gts_arr)
@@ -299,12 +295,12 @@ function addNewNode(e, selected_node) {
 	
 				
 				new_gt = new_gts_arr.pop()
-				//console.log("new_gt", new_gt)
+				////console.log("new_gt", new_gt)
 				break;
 			
 			case "Thought":
 				new_gts_arr = {{ emotions_new_nodes | safe }}
-				////console.log("new_gts_arr", new_gts_arr)
+				//////console.log("new_gts_arr", new_gts_arr)
 				
 				if (new_gts_arr==undefined || !new_gts_arr || new_gts_arr.length <= 0) {
 					alert("NO more new nodes aloud", new_gts_arr)
@@ -313,12 +309,12 @@ function addNewNode(e, selected_node) {
 					
 				
 				new_gt = new_gts_arr.pop()
-				//console.log("new_gt", new_gt)
+				////console.log("new_gt", new_gt)
 				break;
 			
 			case "Emotion":			
 				new_gts_arr = {{ behaviors_new_nodes | safe }}
-				////console.log("new_gts_arr", new_gts_arr)
+				//////console.log("new_gts_arr", new_gts_arr)
 				
 				
 				if (new_gts_arr==undefined || !new_gts_arr || new_gts_arr.length <= 0) {
@@ -327,13 +323,13 @@ function addNewNode(e, selected_node) {
 				}
 						
 				new_gt = new_gts_arr.pop()
-				//console.log("new_gt", new_gt)
+				////console.log("new_gt", new_gt)
 				break;
 			
 			case "Behavior":
 				new_gts_arr = {{ results_new_nodes | safe }}
 				
-				console.log("BEHAVIOR new_gts_arr", new_gts_arr)
+				//console.log("BEHAVIOR new_gts_arr", new_gts_arr)
 				
 				if (new_gts_arr==undefined || !new_gts_arr || new_gts_arr.length <= 0) {
 					alert("NO more new nodes aloud", new_gts_arr)
@@ -341,7 +337,7 @@ function addNewNode(e, selected_node) {
 				}
 					
 				new_gt = new_gts_arr.pop()
-				console.log("new_gt", new_gt)
+				//console.log("new_gt", new_gt)
 				break;
 				
 			default:
@@ -350,22 +346,24 @@ function addNewNode(e, selected_node) {
 					alert("NO more new nodes aloud", new_gts_arr)
 					return 0
 				}
-				console.log("IN Add NEW NODE SWITCH DEFAULT", cn)
+				//console.log("IN Add NEW NODE SWITCH DEFAULT", cn)
 				alert("There is no such node ", cn)
 				return 0			
 																	
 		}
 		
-		//console.log("NEW-GT-ARR", new_gts_arr)
-		//console.log("NEW-GT, NEW-GT-COLOR",new_gt.color)
+		////console.log("NEW-GT-ARR", new_gts_arr)
+		////console.log("NEW-GT, NEW-GT-COLOR",new_gt.color)
 		
 		newNodeData =  {
 				key:         new_gt.id,
-				//parent:     a_node.key,
-				parent:      new_gt.prnt_id,
+				parent:      a_node.key,
+				//parent:      new_gt.prnt_id,
 				
 				source:      new_gt.image_url,
 				h_name:      new_gt.h_name,
+				e_name:      new_gt.e_name,
+				class_name:  new_gt.class_name,
 				
 				textEditable: true,
 				editable:true,			
@@ -397,32 +395,37 @@ let color_idx = 0
 function switchNodeColor(e, selected_node) {
 			
 	let m = myFullDiagram.model
-	
+		
 	// FROM https://forum.nwoods.com/t/focus-to-next-created-node-or-object/11491
 	selected_node.scrollToPart = true;
 	//myFullDiagram.scrollToRect(selected_node.actualBounds);
-	
+		
 	m.startTransaction("changeNodeColor");	
 
 	if (selected_node.data.user_node == "true")  {  // USER PRIVATE NODE
 		let new_color = color_choices_arr[color_idx%7]
 		m.setDataProperty(selected_node.data, "fill_color", new_color );
 		
-		console.log("IN switchNodeColor selected_node.data 11111: ", selected_node.data)
+		//console.log("IN switchNodeColor selected_node.data 11111: ", selected_node.data)
 
 		m.setDataProperty(selected_node.data, "gt_color", new_color );
 		
-		console.log("IN switchNodeColor selected_node.data 22222: ", selected_node.data)
+		//console.log("IN switchNodeColor selected_node.data 22222: ", selected_node.data)
 		
 		color_idx++
 	}
 	
 	else  {  // PUBLIC NODE
-	
+		
+		//console.log("IN SWITCH COLOR BEFFFORE", selected_node.data.gt_color)
+		
 		if (selected_node.data.fill_color == "lightgray")
 			m.setDataProperty(selected_node.data, "fill_color", selected_node.data.gt_color); //Retrieve the original dat	
 		else	
 			m.setDataProperty(selected_node.data, "fill_color", "lightgray"); //GRAY THE NODE	
+	
+		//console.log("IN SWITCH COLOR AFTER", selected_node.data.gt_color)
+	
 	}
 	
 	m.commitTransaction("changeNodeColor");
@@ -435,7 +438,6 @@ function switchNodeColor(e, selected_node) {
 let node_highlighter_id_arr = []				
 let nodeDataArray = [];
 let nodesKeyPushed = [];
-let nodesCreatedByUsr = [];
 
 function setupDiagram() {
 		
@@ -464,7 +466,7 @@ function setupDiagram() {
 					
 						if ( (behavior.prnt_id == emotion.id) && (behavior.color == emotion.color) && (behavior.id>0) && (behavior.prnt_id>0) )  {
 							
-							//console.log("BBBBBBBBBBBBBBBBBB BEHAVIOR", behavior)
+							////console.log("BBBBBBBBBBBBBBBBBB BEHAVIOR", behavior)
 
 							{% include './tree/cbt/behavior_nodes.js' %}
 						}
@@ -493,23 +495,30 @@ function setupDiagram() {
 function highlightUsrNodesPath(e, selected_node) {
 	
 	let parent_node = myFullDiagram.selection.first()
+		
 				
 		myFullDiagram.nodes.each(function(n)  {  //CLEAR ALL HIGHLITS
-	
+		
+			
 		myFullDiagram.startTransaction("v")
 
 			let n_h = findPart( 'HIGHLIGHTER' + n.data.key )
 			
 			if ( !n_h )  {
-				//console.log( "Highliter of this node is null", n.data )
+				////console.log( "Highliter of this node is null", n.data )
 			}
 			
 			else  {
 				n_h.visible = false
-				myFullDiagram.model.setDataProperty(n.data, "in_user_path", "false");
+				
+				
+				//myFullDiagram.model.setDataProperty(n.data, "in_user_path", "false");  // TTTTTTTTTTO BE FIXED
+				
+
 			}
 			
 		myFullDiagram.commitTransaction("v")
+		
 
 	} )
 
@@ -519,8 +528,9 @@ function highlightUsrNodesPath(e, selected_node) {
 		
 		myFullDiagram.startTransaction("HL")
 		
+				console.log("BBRFORE GT_COLOR", parent_node.class_name, parent_node.data.key, parent_node.data.gt_color)
 			myFullDiagram.scrollToRect(parent_node.actualBounds);
-						
+				console.log("AAFTER GT_COLOR",  parent_node.class_name,  parent_node.data.key, parent_node.data.gt_color)
 			h.location = parent_node.location;
 			
 			parent_node.data.in_user_path = "true"
@@ -529,11 +539,21 @@ function highlightUsrNodesPath(e, selected_node) {
 			h.visible = true
 			
 			myFullDiagram.model.setDataProperty(parent_node.data, "in_user_path", "true");
+		
+		/*********** DEBUG TO BE DETED ********************************
+		myFullDiagram.nodes.each(function(n)  {  //CLEAR ALL HIGHLITS
+			//console.log ( "NNNNNNNNN   IN highlightUsrNodesPath parent_node", n.data.key, n.data.gt_color, n.data.class_name)
+
+		})
+		*********** DEBUG TO BE DETED ********************************/
+		
+		
+		
+		
+		//console.log ( "BBBBEFORE NEXT PARENT   IN highlightUsrNodesPath parent_node", parent_node.data.key, parent_node.data.class_name,parent_node.data.gt_color, )
 			
-			console.log("IN highlightUsrNodesPath parent_node: ", parent_node.data)
-			
-			parent_node = parent_node.findTreeParentNode();
-						
+		parent_node = parent_node.findTreeParentNode();
+		
 		myFullDiagram.commitTransaction("HL")
 
 	}
@@ -546,12 +566,12 @@ function save_diagram()  {
 	myFullDiagram.nodes.each(function(n)  {   // Iterate all nodes in diagram
 		
 		if ( n.data.user_node=="false")  {   // SEnd ONLY USER CREATED NODES 
-			console.log("THIS IS ANOT A USER-NODE --- NOT SENDING: ", n.data)
+			//console.log("THIS IS ANOT A USER-NODE --- NOT SENDING: ", n.data)
 		}
 		
 		else  {   // SEnd ONLY USER CREATED NODES
 		
-			console.log("N", n.data)
+			//console.log("N", n.data)
 									
 			usr_nodes_data_arr.push( {  
 					"key":         n.data.key,
@@ -569,7 +589,7 @@ function save_diagram()  {
 		
 	} )
 	
-	console.log("IN save_diagram usr_nodes_data_arr", JSON.stringify(usr_nodes_data_arr))
+	//console.log("IN save_diagram usr_nodes_data_arr", JSON.stringify(usr_nodes_data_arr))
 	
 	jQuery.ajax( {   // FROM https://forum.nwoods.com/t/how-to-trigger-ajax-call-on-dropping-object-from-palette-to-diagram/8762/17
 		type: "POST",
@@ -582,7 +602,7 @@ function save_diagram()  {
 		
 		
 		} ).done(function (data) {
-				//console.log("SAVE DONE ")
+				////console.log("SAVE DONE ")
 			} );			
 }
 

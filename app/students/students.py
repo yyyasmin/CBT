@@ -124,7 +124,7 @@ def show_student_tree():
     
     
     situations = []
-    situation_new_nodes = []
+    situations_new_nodes = []
             
     thoughts = []
     thoughts_new_nodes = []
@@ -140,12 +140,12 @@ def show_student_tree():
 
     tmp_situations = Situation.query.filter(Situation.hide == False).filter(Situation.title != "Enter your title").all()
     for s in tmp_situations:
-        s.prnt_id = 0
+        #s.prnt_id = 0
         situations.append( set_gt_node(s, 0, False) )  # DUMMY tmp_situations should be students
-        situation_new_nodes.append( set_gt_node(s, 0, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+        situations_new_nodes.append( set_gt_node(s, 0, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
 
 
-        tmp_thoughts = Thought.query.filter(Thought.hide == False).filter(Thought.title != "Enter your title").all()
+        tmp_thoughts = Thought.query.filter(Thought.hide == False).filter(Thought.title != "Enter your title").filter(Thought.prnt_id==s.id).all()
         
         print("")
         print("tmp_thoughts", tmp_thoughts)
@@ -153,31 +153,31 @@ def show_student_tree():
         print("")
         
         for t in tmp_thoughts:
-            t.prnt_id = s.id
+            #t.prnt_id = s.id
             ts = set_gt_node(t, tmp_situations, False)
             if ts !=0:
                 thoughts.append( ts )
                 thoughts_new_nodes.append( set_gt_node(t, tmp_situations, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
              
-                tmp_emotions = Emotion.query.filter(Emotion.hide == False).filter(Emotion.title != "Enter your title").all()
+                tmp_emotions = Emotion.query.filter(Emotion.hide == False).filter(Emotion.title != "Enter your title").filter(Emotion.prnt_id==t.id).all()
                 for e in tmp_emotions:
-                    e.prnt_id = t.id
+                    #e.prnt_id = t.id
                     ts = set_gt_node(e, tmp_thoughts, False)
                     if ts != 0:
                         emotions.append( ts )
                         emotions_new_nodes.append( set_gt_node(e, tmp_thoughts, True) )
 
-                        tmp_behaviors = Behavior.query.filter(Behavior.hide == False).filter(Behavior.title != "Enter your title").all()                        
+                        tmp_behaviors = Behavior.query.filter(Behavior.hide == False).filter(Behavior.title != "Enter your title").filter(Behavior.prnt_id==e.id).all()                        
                         for b in tmp_behaviors:
-                            b.prnt_id = e.id
+                            #b.prnt_id = e.id
                             ts = set_gt_node(b, tmp_emotions, False)
                             if ts !=0:
                                 behaviors.append( ts )
                                 behaviors_new_nodes.append( set_gt_node(b, tmp_emotions, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
                              
-                                tmp_results = Result.query.filter(Result.hide == False).filter(Result.title != "Enter your title").all()
+                                tmp_results = Result.query.filter(Result.hide == False).filter(Result.title != "Enter your title").filter(Result.prnt_id==b.id).all()
                                 for r in tmp_results:
-                                    r.prnt_id = b.id
+                                    #r.prnt_id = b.id
                                     ts = set_gt_node(r, tmp_behaviors, False)
                                     if ts != 0:
                                         results.append( ts )
@@ -204,12 +204,12 @@ def show_student_tree():
     
     return render_template('./tree/cbt/dst_tree.html',  
                             std=std,
-                            situations = situations, situation_new_nodes=situation_new_nodes,  
+                            situations = situations, situations_new_nodes=situations_new_nodes,  
                             thoughts = thoughts, thoughts_new_nodes=thoughts_new_nodes,
                             emotions = emotions, emotions_new_nodes=emotions_new_nodes,
                             behaviors=behaviors, behaviors_new_nodes=behaviors_new_nodes,
                             results=results, results_new_nodes=results_new_nodes,
-                            all_new_gts = situation_new_nodes+thoughts_new_nodes+emotions_new_nodes+behaviors_new_nodes+results_new_nodes,
+                            all_new_gts = situations_new_nodes+thoughts_new_nodes+emotions_new_nodes+behaviors_new_nodes+results_new_nodes,
                             whos=behaviors, statuss=statuss,
                             )
 
@@ -244,6 +244,10 @@ def save_usr_diagram():
         user_gt.image_url = d["in_user_path"]
         user_gt.hide = False
         user_gt.used = True
+        user_gt.prnt_id = d["parent"]
+        
+        parent_gt = General_txt.query.filter( General_txt.id == user_gt.prnt_id ).first()       
+        parent_gt.set_parent(user_gt)
         
         print("UPDATING USER-GT: ", user_gt)
         print("")

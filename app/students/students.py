@@ -229,7 +229,7 @@ def save_usr_diagram():
         print("DATA-COLOR: ", d["color"])
         print("DATA-LINE: ", d["title"])
         print("DATA-LINE: ", d["body"])
-        print("DATA-LINE: ", d["in_user_path"])
+        #print("DATA-LINE: ", d["in_user_path"])
         print("")
 
         user_gt = General_txt.query.filter( General_txt.id == d["key"] ).first()
@@ -241,7 +241,7 @@ def save_usr_diagram():
         user_gt.color = d["color"]
         user_gt.color_txt = d["color"]
         user_gt.color_txt = d["color"]
-        user_gt.image_url = d["in_user_path"]
+        #user_gt.image_url = d["in_user_path"]
         user_gt.hide = False
         user_gt.used = True
         user_gt.prnt_id = d["parent"]

@@ -32,10 +32,11 @@
 			name: behavior.title,
 			class_name:  behavior.class_name,
 			
-			user_node: "false",
+			
+			user_node: behavior.usr_node,
 			in_user_path: "false",
 					
-			textEditable: false,
+			textEditable: behavior.usr_node=="true" ? true : false,
 			editable: false,
 			
 			} );

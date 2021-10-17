@@ -32,11 +32,12 @@
 			name: emotion.title,
 			class_name:  emotion.class_name,
 			
-			user_node: "false",
+			user_node: emotion.usr_node,
 			in_user_path: "false",
 					
-			textEditable: false,
+			textEditable: emotion.usr_node=="true" ? true : false,
 			editable: false,
+		
 			
 			} );
 	}

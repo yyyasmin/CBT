@@ -203,8 +203,9 @@ def show_student_tree():
     print("situations", situations)
     print("")
     print("situations_new_nodes", situations_new_nodes)
-    print("")        
-        
+    print("") 
+    
+    '''
     print("")        
     print("thoughts", thoughts)
     print("")        
@@ -212,7 +213,7 @@ def show_student_tree():
     print("")        
     print("emotions", emotions)
     print("")        
-			         
+	'''		         
                 
     print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
     
@@ -239,16 +240,26 @@ def save_usr_diagram():
     for d in request.json:
         print("DATA: ", d)
         print("DATA-KEY: ", d["key"])
-        print("DATA-PARENT: ", d["parent"])
         print("DATA-COLOR: ", d["color"])
         print("DATA-LINE: ", d["title"])
         print("DATA-LINE: ", d["body"])
         #print("DATA-LINE: ", d["in_user_path"])
-        print("")
+        print("DATA-PARENT: ", d["prnt_id"])
+        print("DATA-USER-NODE: ", d["usr_node"])
 
+        print("")
+        
+        
+        #DEBUG
+        sits = Situation.query.all()
+        for s in sits:
+            print("SITUATION:  S-Id S-KEY S-Id==s-KEY S-Id==INT-S-KEY ", s, s.id, d["key"], 
+                                                                         s.id==d["key"], s.id==int(d["key"]) )
+            print("")
+        #DEBUG
+        
         user_gt = General_txt.query.filter( General_txt.id == d["key"] ).first()
         
-        print("UPDATING USER-GT GT_COLOR", user_gt, user_gt.prnt_id)
         
         user_gt.title = d["title"]
         user_gt.body = d["body"]
@@ -258,11 +269,13 @@ def save_usr_diagram():
         #user_gt.image_url = d["in_user_path"]
         user_gt.hide = False
         user_gt.used = True
-        user_gt.prnt_id = d["parent"]
+        user_gt.usr_node = d["usr_node"]
+        user_gt.prnt_id = d["prnt_id"]
         
         parent_gt = General_txt.query.filter( General_txt.id == user_gt.prnt_id ).first()       
         parent_gt.set_parent(user_gt)
         
+        print("UPDATING USER-GT GT_COLOR", user_gt, user_gt.prnt_id)
         print("UPDATING USER-GT: ", user_gt)
         print("")
         
@@ -296,12 +309,12 @@ def set_gt_node(gt, parent_arr, is_new_usr_gt):
     '''    
     #DEBUG TO BE DELETED
             
-    empty_gts = General_txt.query.filter(General_txt.title == "Enter your title" or General_txt.color=="lightgray" ).all()
+    empty_gts = eval(gt.class_name).query.filter(eval(gt.class_name).title == "Enter your title" or eval(gt.class_name).color=="lightgray" ).all()
     for e in empty_gts:
         db.session.delete(e)
         db.session.commit()
+        
  
-    
     new_gt_struct = gt
         
     if new_gt_struct.class_name == 'Student':
@@ -314,9 +327,11 @@ def set_gt_node(gt, parent_arr, is_new_usr_gt):
         new_gt = eval(gt.class_name)("Enter your title", "Enter your description", get_author_id() )
         db.session.add(new_gt)
         new_gt.used = False
+        new_gt.usr_node = True
         new_gt.color = "lightgray"
         new_gt.image_url = url_for( 'static', filename = 'img/' + gt.gt_type + '/' + new_gt.image_url ),
         new_gt.prnt_id = gt.prnt_id
+        new_gt.usr_node = "true"
         db.session.commit() 
                      
         new_gt_struct = new_gt
@@ -339,6 +354,7 @@ def set_gt_node(gt, parent_arr, is_new_usr_gt):
                 		
 		"in_user_path": "false",
 		"node_pushed":  "false",
+		"user_node":  new_gt_struct.usr_node,
 
         "CHILDREN" :  [],
         "BROTHERS" :  [],

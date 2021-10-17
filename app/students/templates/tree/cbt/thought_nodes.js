@@ -31,10 +31,10 @@
 			name: thought.title,
 			class_name:  thought.class_name,
 			
-			user_node: "false",
+			user_node: thought.usr_node,
 			in_user_path: "false",
 					
-			textEditable: false,
+			textEditable: thought.usr_node=="true" ? true : false,
 			editable: false,
 		
 			//text_color: sts.color,

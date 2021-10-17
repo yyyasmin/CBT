@@ -32,10 +32,11 @@
 			name: result.title,
 			class_name:  result.class_name,
 			
-			user_node: "false",
+			
+			user_node: result.usr_node,
 			in_user_path: "false",
 					
-			textEditable: false,
+			textEditable: result.usr_node=="true" ? true : false,
 			editable: false,
 			
 			} );

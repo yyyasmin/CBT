@@ -199,6 +199,7 @@ class General_txt(db.Model):
     selected = db.Column(db.Boolean)
     hide = db.Column(db.Boolean) 
     used = db.Column(db.Boolean) 
+    usr_node = db.Column(db.String(10),   nullable=True) 
 
 
    # Anthonies suggestion
@@ -277,6 +278,7 @@ class General_txt(db.Model):
         self.hide = False
         self.default = False
         self.used = True
+        self.usr_node = "false"   # String an not boolean so it matches gojs template js file
         
         self.image_url = 'default_image.jpg'
         

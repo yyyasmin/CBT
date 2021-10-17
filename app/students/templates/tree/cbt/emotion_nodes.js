@@ -2,13 +2,13 @@
 	
 	let emotion_already_in_diagram = false
 	
-	console.log ("IN EMOTION NODE emotion:", emotion)
+	//console.log ("IN EMOTION NODE emotion:", emotion)
 	
 	for (let nkp_idx=0; nkp_idx<=nodesKeyPushed.length; nkp_idx++) {
 		console.log ( "nodesKeyPushed-i", nkp_idx, nodesKeyPushed[nkp_idx] )
 		if (nodesKeyPushed[nkp_idx] == emotion.id )  {
 			emotion_already_in_diagram = true
-			console.log ("This NODE ALLREADY IN DIAGRAM emotion.id", emotion.id, nodesKeyPushed)
+			//console.log ("This NODE ALLREADY IN DIAGRAM emotion.id", emotion.id, nodesKeyPushed)
 			break;
 		}
 	}

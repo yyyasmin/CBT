@@ -88,9 +88,17 @@
 						editable: true,
 						row : 4, column : 1,					
 						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
-						//new go.Binding("text", "usr_body" ).makeTwoWay() ),
 						new go.Binding("text", "body" ).makeTwoWay() ),
-	
+								
+					/********************************************
+					$(go.TextBlock, {   // DEBUG TO BE DELETED
+						//editable: true,
+						row : 4, column : 2,					
+						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" }, 
+						//new go.Binding("text", "usr_body" ).makeTwoWay() ),
+						new go.Binding("text", "user_node" ).makeTwoWay() ),
+					**************************************************/
+					
 					$(go.TextBlock, {  
 						row : 5, column : 0,					
 						margin: 3, stroke:"black", textAlign: "center", font: "16pt sans-serif" },
@@ -106,14 +114,15 @@
 						new go.Binding("stroke", "text_color").makeTwoWay(),
 						
 						new go.Binding("text", "in_user_path").makeTwoWay(),
-						
+												
 						//new go.Binding("visible", "visible").makeTwoWay(),						
 						// FROM https://gojs.net/latest/intro/dataBinding.html
 						//new new go.Binding("visible", "user_node", function(user_node) { return user_node =="false"; }),
 
 						new go.Binding("text", "class_name"),	
 							new go.Binding("visible", "class_name", function(t) { return false } )  ),// DONT SHOW CLASS-NAME
-							
+		
+						
 					// FROM https://gojs.net/latest/intro/buttons.html		
 					$("TreeExpanderButton",  {
 							row: 6, column: 0,

@@ -2,13 +2,13 @@
 
 	let thought_already_in_diagram = false
 	
-	console.log ("IN THOUGHT NODE thought:", thought)
+	//console.log ("IN THOUGHT NODE thought:", thought)
 	
 	for (let nkp_idx=0; nkp_idx<=nodesKeyPushed.length; nkp_idx++) {
 		console.log ( "nodesKeyPushed-i", nkp_idx, nodesKeyPushed[nkp_idx] )
 		if (nodesKeyPushed[nkp_idx] == thought.id )  {
 			thought_already_in_diagram = true
-			console.log ("This NODE ALLREADY IN DIAGRAM thought.id", thought.id, nodesKeyPushed)
+			//console.log ("This NODE ALLREADY IN DIAGRAM thought.id", thought.id, nodesKeyPushed)
 			break;
 		}
 	}	

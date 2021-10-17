@@ -265,7 +265,6 @@ def save_usr_diagram():
         user_gt.body = d["body"]
         user_gt.color = d["color"]
         user_gt.color_txt = d["color"]
-        user_gt.color_txt = d["color"]
         #user_gt.image_url = d["in_user_path"]
         user_gt.hide = False
         user_gt.used = True

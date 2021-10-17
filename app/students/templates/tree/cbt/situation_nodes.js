@@ -1,8 +1,8 @@
-{% block dst_data_3 %}
+{% block solution_data %}
 
 	let situation_already_in_diagram = false
 	
-	console.log ("IN EMOTION NODE situation:", situation)
+	console.log ("IN SITUATION NODE situation:", std)
 	
 	for (let nkp_idx=0; nkp_idx<=nodesKeyPushed.length; nkp_idx++) {
 		console.log ( "nodesKeyPushed-i", nkp_idx, nodesKeyPushed[nkp_idx] )
@@ -12,26 +12,33 @@
 			break;
 		}
 	}	
+	
+	
+	if (!situation_already_in_diagram )  {
 		
-	nodeDataArray.push( {
-		key: situation.id,
-		//parent: 0, 
-		parent: situation.prnt_id,
+		nodesKeyPushed[nodesKeyPushed.length] = situation.id 
+		
+		nodeDataArray.push( {
+			key: situation.id,
+			//parent: situation.prnt_id,
+			parent: std.id,
 
-		fill_color:  situation.color,
-		gt_color:    situation.color,
-		source:      situation.image_url,
-		h_name:      situation.h_name,
-		
-		name:        situation.title,
-		class_name:  situation.class_name,
-		
-		user_node: "false",
-		in_user_path: "false",
-				
-		textEditable: false,
-		editable: false,
-		
-	} );			
+			fill_color:  situation.color,
+			gt_color:    situation.color,
+			source:      situation.image_url,
+			h_name:      situation.h_name,
 			
-{% endblock dst_data_3 %}
+			name:        situation.title,
+			class_name:  situation.class_name,
+			
+			user_node: "false",
+			in_user_path: "false",
+					
+			textEditable: false,
+			editable: false,
+			
+		} );
+	
+	}	
+			
+{% endblock solution_data %}

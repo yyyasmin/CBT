@@ -112,9 +112,7 @@ def show_student_tree():
     if std == None:
         flash("Please select a student first ")
         return redirect(url_for('students.edit_students'))
-    
-    gts_arr = []
-    
+        
     #DELETE ALL EMPTY GTS
     empty_gts = General_txt.query.filter(General_txt.title == "Enter your title").all()
     for e_gt in empty_gts:
@@ -138,6 +136,21 @@ def show_student_tree():
     results = []
     results_new_nodes = []
 
+    std_arr = []
+    tmp_std = std
+    std_arr.append( set_gt_node(std, 0, False) ) 
+    
+    print("")
+    print("STD: ", std_arr)
+    print("")
+    
+    
+    tmp_situations = Situation.query.filter(Situation.hide == False).filter(Situation.title != "Enter your title").all()
+    for s in tmp_situations:
+        #s.prnt_id = 0
+        situations.append( set_gt_node(s, 0, False) )  # DUMMY tmp_situations should be students
+        situations_new_nodes.append( set_gt_node(s, 0, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+    
     tmp_situations = Situation.query.filter(Situation.hide == False).filter(Situation.title != "Enter your title").all()
     for s in tmp_situations:
         #s.prnt_id = 0
@@ -146,11 +159,6 @@ def show_student_tree():
 
 
         tmp_thoughts = Thought.query.filter(Thought.hide == False).filter(Thought.title != "Enter your title").filter(Thought.prnt_id==s.id).all()
-        
-        print("")
-        print("tmp_thoughts", tmp_thoughts)
-        print("s.children", s.children)
-        print("")
         
         for t in tmp_thoughts:
             #t.prnt_id = s.id
@@ -188,7 +196,13 @@ def show_student_tree():
         statuss.appens(s)
         
     print("")        
+    print("std_arr", std_arr)
+    print("")        
+           
+    print("")        
     print("situations", situations)
+    print("")
+    print("situations_new_nodes", situations_new_nodes)
     print("")        
         
     print("")        
@@ -203,7 +217,7 @@ def show_student_tree():
     print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
     
     return render_template('./tree/cbt/dst_tree.html',  
-                            std=std,
+                            std=std, std_arr = std_arr,
                             situations = situations, situations_new_nodes=situations_new_nodes,  
                             thoughts = thoughts, thoughts_new_nodes=thoughts_new_nodes,
                             emotions = emotions, emotions_new_nodes=emotions_new_nodes,
@@ -289,7 +303,10 @@ def set_gt_node(gt, parent_arr, is_new_usr_gt):
  
     
     new_gt_struct = gt
-                        
+        
+    if new_gt_struct.class_name == 'Student':
+        new_gt_struct.prnt_id = 0
+        
     if is_new_usr_gt:
         num_of_new_usr_gt_of_this_class =  eval(gt.class_name).query.filter(eval(gt.class_name).hide==False).filter(eval(gt.class_name).title == "Enter your title").count()
         

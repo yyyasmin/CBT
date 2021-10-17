@@ -268,7 +268,7 @@ function addNewNode(e, selected_node) {
 		
 		switch(cn)  {
 		
-			case "Person":
+			case "Student":
 				new_gts_arr = {{ situations_new_nodes | safe }}
 				
 				//console.log("SWITCH PERSN new_gts_arr", new_gts_arr)
@@ -441,11 +441,21 @@ let nodesKeyPushed = [];
 
 function setupDiagram() {
 		
-	let situations = {{ situations | safe }}
-		
+	let std_node_arr = {{ std_arr | safe }}
+	let std = std_node_arr[0]
+	
+	console.log("STD", std, std.prnt_id, std.id , std.prnt_id==0, std.id>=0)
+
+	if (std.prnt_id == 0 && std.id>=0)  {	
+		{% include './tree/cbt/std_node.js' %}
+	}
+	
+	let situations = {{ situations | safe }}		
 	for ( let i=0; i< situations.length; i++ )  {  // SITUATIONS
-		let situation = situations[i]										
-		{% include './tree/cbt/situation_nodes.js' %}
+		let situation = situations[i]					
+		if (situation.prnt_id == std.id && situation.id>0)  {
+			{% include './tree/cbt/situation_nodes.js' %}
+		}
 		
 		let thoughts = {{thoughts | safe}}			
 		for ( let j=0; j< thoughts.length; j++ )  {  // THOGHTS

@@ -13,25 +13,20 @@ class Config(object):
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://') or \
         'postgresql://postgres:postgres@localhost:5432/menta'
-    
-    #FROM https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xxii-background-jobs
-    #REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'   
-        
-    #SQLALCHEMY_MIGRATE_REPO = 
-    
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+  
+    #SQLALCHEMY_TRACK_MODIFICATIONS = True
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
     #SQLALCHAMY_ECHO = True
 
     #FROM https://stackoverflow.com/questions/53678781/how-to-configure-flask-uploads-properly-to-upload-files
 
-    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'PNG', 'jpg', 'jpeg', 'gif', 'dcox'])
+    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'PNG', 'jpg', 'jpeg', 'gif', 'dcox', 'JPG'])
     UPLOAD_FOLDER = '/resource files'
     UPLOADED_FILES_DEST = '/uploaded_files_dest'
     #FROM https://pythonhosted.org/Flask-Scss/
     SCSS_STATIC_DIR = 'app/static'
     SCSS_ASSET_DIR = 'app/static/assets'
-    SCSS_LOAD_PATHS = [ '/Library/Ruby/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/']
+    #SCSS_LOAD_PATHS = [ '/Library/Ruby/Gems/1.8/gems/compass-0.11.5/frameworks/compass/stylesheets/']
 
     #ANTHONIES ADVISE 
     #SQLALCHEMY_ECHO = True 
@@ -52,6 +47,7 @@ class Config(object):
     WTF_CSRF_ENABLED = True    
     DEBUG = True
     TEMPLATES_AUTO_RELOAD = True
+    FLASK_ENV = 'development'
     
     
         

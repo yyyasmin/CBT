@@ -140,9 +140,9 @@ def show_student_tree():
     tmp_std = std
     std_arr.append( set_gt_node(std, 0, False) ) 
     
-    print("")
-    print("STD: ", std_arr)
-    print("")
+    #print("")
+    #print("STD: ", std_arr)
+    #print("")
     
     
     tmp_situations = Situation.query.filter(Situation.hide == False).filter(Situation.title != "Enter your title").all()
@@ -195,27 +195,35 @@ def show_student_tree():
     for s in Status.query.all():
         statuss.appens(s)
         
-    print("")        
-    print("std_arr", std_arr)
-    print("")        
+    #print("")        
+    #print("std_arr", std_arr)
+    #print("")        
            
-    print("")        
-    print("situations", situations)
-    print("")
-    print("situations_new_nodes", situations_new_nodes)
-    print("") 
+    #print("")        
+    #print("situations", situations)
+    #print("")
+    #print("situations_new_nodes", situations_new_nodes)
+    #print("") 
     
     '''
-    print("")        
-    print("thoughts", thoughts)
-    print("")        
+    #print("")        
+    #print("thoughts", thoughts)
+    #print("")        
         
-    print("")        
-    print("emotions", emotions)
-    print("")        
-	'''		         
+    #print("")        
+    #print("emotions", emotions)
+    #print("")        
+	'''	
+    print("STD", std_arr)
+    print("")
+    for s in situations:
+        print("   STTUATION:", s)
+        print("")
+        for t in thoughts:
+            print("      THOUGHT: ", t)
+            print("")
                 
-    print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+    #print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
     
     return render_template('./tree/cbt/dst_tree.html',  
                             std=std, std_arr = std_arr,
@@ -235,28 +243,21 @@ import json
 @login_required
 def save_usr_diagram():
 
-    print("IN save_usr_diagram")
+    #print("IN save_usr_diagram")
     
     for d in request.json:
-        print("DATA: ", d)
-        print("DATA-KEY: ", d["key"])
-        print("DATA-COLOR: ", d["color"])
-        print("DATA-LINE: ", d["title"])
-        print("DATA-LINE: ", d["body"])
-        #print("DATA-LINE: ", d["in_user_path"])
-        print("DATA-PARENT: ", d["prnt_id"])
-        print("DATA-USER-NODE: ", d["usr_node"])
+        #print("DATA: ", d)
+        #print("DATA-KEY: ", d["key"])
+        #print("DATA-COLOR: ", d["color"])
+        #print("DATA-LINE: ", d["title"])
+        #print("DATA-LINE: ", d["body"])
+        ##print("DATA-LINE: ", d["in_user_path"])
+        #print("DATA-PARENT: ", d["prnt_id"])
+        #print("DATA-USER-NODE: ", d["usr_node"])
 
-        print("")
+        #print("")
         
-        
-        #DEBUG
-        sits = Situation.query.all()
-        for s in sits:
-            print("SITUATION:  S-Id S-KEY S-Id==s-KEY S-Id==INT-S-KEY ", s, s.id, d["key"], 
-                                                                         s.id==d["key"], s.id==int(d["key"]) )
-            print("")
-        #DEBUG
+
         
         user_gt = General_txt.query.filter( General_txt.id == d["key"] ).first()
         
@@ -265,7 +266,6 @@ def save_usr_diagram():
         user_gt.body = d["body"]
         user_gt.color = d["color"]
         user_gt.color_txt = d["color"]
-        #user_gt.image_url = d["in_user_path"]
         user_gt.hide = False
         user_gt.used = True
         user_gt.usr_node = d["usr_node"]
@@ -274,13 +274,13 @@ def save_usr_diagram():
         parent_gt = General_txt.query.filter( General_txt.id == user_gt.prnt_id ).first()       
         parent_gt.set_parent(user_gt)
         
-        print("UPDATING USER-GT GT_COLOR", user_gt, user_gt.prnt_id)
-        print("UPDATING USER-GT: ", user_gt)
-        print("")
+        #print("UPDATING USER-GT GT_COLOR", user_gt, user_gt.prnt_id)
+        #print("UPDATING USER-GT: ", user_gt)
+        #print("")
         
         db.session.commit()
         
-        print("")
+        #print("")
         
     return show_student_tree()
     
@@ -289,8 +289,8 @@ def save_usr_diagram():
     
     res = jsonify( { 'save_d': dmmy_array } )
     
-    print( "RES", res )
-    print("")
+    #print( "RES", res )
+    #print("")
     
     return res
     '''
@@ -371,15 +371,15 @@ def set_gt_node(gt, parent_arr, is_new_usr_gt):
 @login_required
 def json_tree(gt, method):
 
-    print("")
-    #print("DOING GT ", gt)
-    print("")
-    print("") 
+    #print("")
+    ##print("DOING GT ", gt)
+    #print("")
+    #print("") 
     
     global sts_color_set
     
-    #print("DOING GT: ", gt)
-    print("")
+    ##print("DOING GT: ", gt)
+    #print("")
     
     j_tree =  {   
               "class_name": gt.class_name, 
@@ -426,9 +426,9 @@ def json_tree(gt, method):
         j_tree['BROTHERS'].append( ( {'results': results} ) )
                   
     if sts_color_set:
-        print("JSON-TREE BEFORE STS ", j_tree)
+        #print("JSON-TREE BEFORE STS ", j_tree)
         j_tree.append( { "sts_color": sts_color, "sts_title": sts_title } )
-        print("JSON-TREE AFTER STS ", j_tree)
+        #print("JSON-TREE AFTER STS ", j_tree)
         sts_color_set = False
                   
     global num_of_nodes
@@ -440,17 +440,17 @@ def json_tree(gt, method):
     num_of_nodes = num_of_nodes + 1 
     for c in gt.children:
     
-        print("")
+        #print("")
 
         if c==None or c==[]: 
-            print("")
+            #print("")
             continue
 
 
         if c.id in gt_done:
             if c.is_parent_of(gt):
-                print("  OOOOOOOOOOOOOOOOOOOOOOOPS {0} {1} is parent of {1}{2} and vise versa ".format(gt.class_name, gt.title, c.class_name, c.title) )
-                print("")
+                #print("  OOOOOOOOOOOOOOOOOOOOOOOPS {0} {1} is parent of {1}{2} and vise versa ".format(gt.class_name, gt.title, c.class_name, c.title) )
+                #print("")
                 continue
        
         db.session.commit()
@@ -459,18 +459,18 @@ def json_tree(gt, method):
             sts_color = c.color
             sts_title = c.title
             sts_color_set = 1
-            #print("NOT DOING {0} IT IS  STATUS TYPE ".format(c))
-            print("")
+            ##print("NOT DOING {0} IT IS  STATUS TYPE ".format(c))
+            #print("")
             continue
 
         if c.gt_type != method:
             if c.gt_type == None:
-                print("C TYPE is", c.gt_type)
+                #print("C TYPE is", c.gt_type)
                 continue
             else:
-                print("NOT DOING   ", c ) 
-                print("it is NOT IN FAMILY TYPE  ", method ) 
-                print("")
+                #print("NOT DOING   ", c ) 
+                #print("it is NOT IN FAMILY TYPE  ", method ) 
+                #print("")
                 continue
     
         j_tree["CHILDREN"].append(json_tree(c, method))
@@ -480,45 +480,45 @@ def json_tree(gt, method):
     return j_tree  # WITHOUT THIS JS CAN NOT READ IT
     
 
-@std.route('/print_tree', methods=['GET', 'POST'])
+@std.route('/#print_tree', methods=['GET', 'POST'])
 @login_required
 def print_tree(gt):
 
-    print("")
-    print("")
+    #print("")
+    #print("")
     
     count = 0
     
     global num_of_nodes
-    print("GT {0}  HAs {1}_NODES".format(str(gt['class_name']), num_of_nodes)  )  # CALL PARSE FUNCTION JSON.parse...
+    #print("GT {0}  HAs {1}_NODES".format(str(gt['class_name']), num_of_nodes)  )  # CALL PARSE FUNCTION JSON.parse...
     count = count+1
 
-    print("")            
-    print("     CHILDREN ") 
+    #print("")            
+    #print("     CHILDREN ") 
     for c in gt["CHILDREN"]:
         if c!=[] and c!= None:
             count = count+1
-            print( "C       ",  str(c['class_name']), str(c['id']) ,str(c['BROTHERS']) )
-            print("")
+            #print( "C       ",  str(c['class_name']), str(c['id']) ,str(c['BROTHERS']) )
+            #print("")
             for gc in c["CHILDREN"]:
                 if gc!=[] and gc!= None:
                     count = count+1
-                    print( "GC:             ", str(gc['class_name']), str(gc['id']) ,str(gc['BROTHERS']))
-                    print("")           
+                    #print( "GC:             ", str(gc['class_name']), str(gc['id']) ,str(gc['BROTHERS']))
+                    #print("")           
                     
                     for ggc in gc["CHILDREN"]:
                         if ggc!=[] and ggc!= None:
                             count = count+1
-                            print( "GGC:                  ", str(ggc['class_name']), str(ggc['id']), str(ggc['BROTHERS']) )
-                            print("")
+                            #print( "GGC:                  ", str(ggc['class_name']), str(ggc['id']), str(ggc['BROTHERS']) )
+                            #print("")
                      
                         for gggc in ggc["CHILDREN"]:
                             if gggc!=[] and gggc!= None:
                                 count = count+1
-                                print( "GGGC:                       ", str(gggc['class_name']), str(gggc['id']), str(gggc['BROTHERS']) )
-                                print("")
+                                #print( "GGGC:                       ", str(gggc['class_name']), str(gggc['id']), str(gggc['BROTHERS']) )
+                                #print("")
                                 
-    return print("NODES PRINTED: ", count)
+    return #print("NODES PRINTED: ", count)
     
                     
 @std.route('/show_student_tree2/<int:selected_student_id>', methods=['GET', 'POST'])
@@ -572,8 +572,8 @@ def student_add():
       
     author_id = get_author_id()
     
-    print("AYTHOR-ID ", author_id)
-    print("")
+    #print("AYTHOR-ID ", author_id)
+    #print("")
 
     if request.method == 'GET':
         return render_template('add_student.html', author_id=author_id)
@@ -604,8 +604,8 @@ def student_add():
     db.session.add(std)
     db.session.commit() 
 
-    print("NEW STD: ", std.first_name, str(std.id), author_id )
-    print("")
+    #print("NEW STD: ", std.first_name, str(std.id), author_id )
+    #print("")
     
     #FROM https://stackoverflow.com/questions/25189017/tablemodel-inheritance-with-flask-sqlalchemy
     new_profile = Profile(title=std.first_name + 's Profile', body=str(std.id), author_id=author_id)
@@ -741,8 +741,8 @@ def student_delete_for_good2(selected_student_id):
 @login_required
 def plan_report():
 	
-    print("IN PLAN REPORT ")
-    print("")
+    #print("IN PLAN REPORT ")
+    #print("")
     
     std = Student.query.filter(Student.selected==True).first()
     if std == None:
@@ -751,8 +751,8 @@ def plan_report():
       
     std_gts = General_txt.query.join(Std_general_txt).filter(Std_general_txt.student_id==std.id).filter(Std_general_txt.general_txt_id==General_txt.id).all()
     
-    print("std_gts", std_gts)
-    print("")
+    #print("std_gts", std_gts)
+    #print("")
     
     student_dsts = []    # Get all student's destinations
     all_dsts = Destination.query.filter(Destination.hide==False).all()  
@@ -764,9 +764,9 @@ def plan_report():
                 if c not in std_gts:
                     std_gts.append(c)
     
-    print("student_dsts", student_dsts)
-    print("")
-    print("")
+    #print("student_dsts", student_dsts)
+    #print("")
+    #print("")
     
     destinations_not_of_student = list(set(all_dsts).difference(set(student_dsts)))  #destinations_not_of_student = all_destinations - std_destinations
    
@@ -849,12 +849,12 @@ def plan_report():
     if strn==None:
         strn = Strength('Strength_data', 'Strength_data', author_id)
     
-    print("")
-    print("")
-    print("STRN ODD: ", strn.odd_color)
-    print("STRN EVEN: ", strn.even_color)
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print("STRN ODD: ", strn.odd_color)
+    #print("STRN EVEN: ", strn.even_color)
+    #print("")
+    #print("")
     
     weak = Weakness.query.filter(Weakness.title=='Subject_data').first()
     if weak==None:
@@ -1717,7 +1717,7 @@ def document_to_student_add():
     file_data = uploaded_file.read()
     uploaded_file = Ufile(file_name, file_data, author_id)  #find out how to set file_data    
     db.session.add(uploaded_file)
-    print("IN document_to_student_add uploaded_file: ", uploaded_file)
+    #print("IN document_to_student_add uploaded_file: ", uploaded_file)
     db.session.commit()
     
     ### UPDATE DOCUMENT 
@@ -1791,9 +1791,9 @@ def document_from_student_delete2(selected_student_id, selected_document_id):
 @login_required
 def edit_std_destinations_by_ssharon():
     
-    print("")
-    print("")
-    print("IN edit_std_destinations_by_ssharon")
+    #print("")
+    #print("")
+    #print("IN edit_std_destinations_by_ssharon")
     
     author_id = get_author_id()
     
@@ -1835,15 +1835,15 @@ def edit_std_destinations_by_ssharon():
         whos.append(who)
     
     default_who = Accupation.query.filter(Accupation.default==True).first()
-    #print("2222222222222222222222222222222")
+    ##print("2222222222222222222222222222222")
 
-    print("")
-    print("")
-    print("METHOD_TYPES: ", method_types)
-    print("TESTS: ", tests)
-    print("WHOS: ", whos)
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print("METHOD_TYPES: ", method_types)
+    #print("TESTS: ", tests)
+    #print("WHOS: ", whos)
+    #print("")
+    #print("")
  
     
     #sub_tags = Sub_tag.query.order_by(Sub_tag.title).all() 
@@ -1882,8 +1882,8 @@ def edit_std_destinations_by_ssharon():
     student_goals = []    # Get all student's destinations
     all_goals = Goal.query.filter(Goal.hide==False).all()
     
-    print("")
-    print("")
+    #print("")
+    #print("")
    
     for g in std_gts:
         if g in all_goals:
@@ -1910,7 +1910,7 @@ def edit_std_destinations_by_ssharon():
     if dst_obj == None:
         dst_obj = Destination("Data Object", "ex", author_id)
 
-    #print("1111111111111111111111111111111")
+    ##print("1111111111111111111111111111111")
 
     statuss = Status.query.all()
     default_status = Status.query.filter(Status.default==True).first()
@@ -1920,32 +1920,32 @@ def edit_std_destinations_by_ssharon():
             default_status = Status('עדין לא הושג', 'Not achieved yet', get_author_id())
             db.session.add(default_status)
             db.session.commit()
-    #print("33333333333333333333333333")
+    ##print("33333333333333333333333333")
 
-    print("")
-    print("")
+    #print("")
+    #print("")
 
-    print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+    #print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
 
     std_txts = Std_general_txt.query.filter(Std_general_txt.student_id==std.id).all()
 
     due_date = date.today()
      
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
 
-    #print("")
-    #print("")
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
+    ##print("")
+    ##print("")
     
     due_date = date.today()
     
 
     files = Ufile.query.all()   #Reset files selection
 
-    print("")
-    print("IN END of SSHARON calling show_std_dsts_by_tag.html")
+    #print("")
+    #print("IN END of SSHARON calling show_std_dsts_by_tag.html")
 
     
     #return render_template('./destinations/dsts_table_2/show_std_dsts_by_tag.html', std=std, due_date=due_date,
@@ -2047,60 +2047,60 @@ def student_dsts():
         
     '''
     #DEBUG ONLY
-    #print("")
-    #print("")    
+    ##print("")
+    ##print("")    
     for d in student_dsts:
-        print("D", d.title, d.id)
+        #print("D", d.title, d.id)
         for g in student_goals: 
             if d.is_parent_of(g):
-                print("   G", g.title, g.id)
+                #print("   G", g.title, g.id)
             for t in student_todos:
                 if g.is_parent_of(t):
-                    print("       T", t.title, t.id)
-    #print("")
-    #print("")  
+                    #print("       T", t.title, t.id)
+    ##print("")
+    ##print("")  
           
     for d in dsts_not_of_student:
-        print("D  NOT_OF_STD ", d.title, d.id)
+        #print("D  NOT_OF_STD ", d.title, d.id)
         for g in goals_not_of_student:
             if d.is_parent_of(g):
-                print("   G  NOT_OF_STD", g.title, g.id)
+                #print("   G  NOT_OF_STD", g.title, g.id)
             for t in todos_not_of_student:
                 if g.is_parent_of(t):
-                    print("       T  NOT_OF_STD", t.title, t.id)
-    #print("")
-    #print("")
+                    #print("       T  NOT_OF_STD", t.title, t.id)
+    ##print("")
+    ##print("")
     #DEBUG ONLY
     '''
     
-    #print("1111111111111111111111111111111")
+    ##print("1111111111111111111111111111111")
 
     whos = Accupation.query.all()
     default_who = Accupation.query.filter(Status.default==True).first()
-    #print("2222222222222222222222222222222")
+    ##print("2222222222222222222222222222222")
 
     statuss = Status.query.all()
     default_status = Status.query.filter(Status.default==True).first()
-    #print("33333333333333333333333333")
+    ##print("33333333333333333333333333")
     
-    print("")
-    print("")
+    #print("")
+    #print("")
 
-    print("")
-    print("")
+    #print("")
+    #print("")
   
 
     std_txts = General_txt.query.filter( General_txt in std.children ).all()
 
     due_date = date.today()
      
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
 
-    #print("")
-    #print("")
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
+    ##print("")
+    ##print("")
     
     due_date = date.today()
     
@@ -2150,15 +2150,15 @@ def update_std_txt():
     
     gt_who_name = "who"+ str(gt.id)
            
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
     
     if gt_sts_name in request.form:
-        print("")
-        print("")
-        print("IN update_std_txt request.form[gt_sts_name]" , request.form[gt_sts_name])
-        print("")
-        print("")
+        #print("")
+        #print("")
+        #print("IN update_std_txt request.form[gt_sts_name]" , request.form[gt_sts_name])
+        #print("")
+        #print("")
         
         selected_gt_status = Status.query.filter(Status.title==request.form[gt_sts_name]).first()    
         if selected_gt_status != None:
@@ -2172,11 +2172,11 @@ def update_std_txt():
         who = set_gt_category(gt.id, 'Accupation', selected_gt_who.title, 'יש לבחור תפקיד האחראי על המשימה')  , 
     
     if gt_due_date_name in request.form:
-        print("")
-        print("")
-        print("IN update_std_txt request.form[gt_sts_name]" , request.form[gt_sts_name])
-        print("")
-        print("")
+        #print("")
+        #print("")
+        #print("IN update_std_txt request.form[gt_sts_name]" , request.form[gt_sts_name])
+        #print("")
+        #print("")
         gt_due_date = request.form[gt_due_date_name]                
         if gt_due_date != None:
             std_txt.due_date = gt_due_date
@@ -2198,49 +2198,49 @@ def update_std_txt2():
     std = Student.query.filter(Student.selected==True).first()
 
     if 'selected_ar' in request.form:
-        #print("")
-        #print("request.form['selected_ar']", request.form['selected_ar'])
+        ##print("")
+        ##print("request.form['selected_ar']", request.form['selected_ar'])
         ar = Age_range.query.filter(Age_range.title==request.form['selected_ar']).first()
         if ar != None:
             selected_ar = ar
             selected_ar = age_range_select2(selected_ar.id)
-        print("")
-        print("")
-        print("IN update_std_txt ar = ", ar)
-        print("IN update_std_txt selected_ar = ", selected_ar, selected_ar.id)
-        print("")        
+        #print("")
+        #print("")
+        #print("IN update_std_txt ar = ", ar)
+        #print("IN update_std_txt selected_ar = ", selected_ar, selected_ar.id)
+        #print("")        
     
     if 'selected_tag' in request.form:
-        print("")
-        print("request.form['selected_tag']", request.form['selected_tag'])
+        #print("")
+        #print("request.form['selected_tag']", request.form['selected_tag'])
         tag = Tag.query.filter(Tag.title==request.form['selected_tag']).first()
         if tag != None:
             selected_tag = tag
             selected_tag = tag_select2(selected_tag.id)
-        print("")
-        print("IN update_std_txt tag = ", tag)
-        print("IN update_std_txt selected_tag = ", selected_tag, selected_tag.id)
-        print("")
-        print("")
-        print("")
+        #print("")
+        #print("IN update_std_txt tag = ", tag)
+        #print("IN update_std_txt selected_tag = ", selected_tag, selected_tag.id)
+        #print("")
+        #print("")
+        #print("")
         if request.form['txt_type_form_button_name'] == 'std_selected_tag_and_ar':
             return student_dsts()  
 
     if 'txt_type_form_button_name' in request.form:
         gt_id = int(request.form['txt_type_form_button_name'])
         gt = General_txt.query.filter(General_txt.id == gt_id).first()
-        #print("")
-        #print("")
-        #print("request.form['txt_type_form_button_name'] -- gt: --  ", gt.id. gt.type)
+        ##print("")
+        ##print("")
+        ##print("request.form['txt_type_form_button_name'] -- gt: --  ", gt.id. gt.type)
         std_gt = attach_gt_to_std(std.id, gt.id)
         std_gt = std_general_txt_select2(std.id, gt_id)    
        
     if 'dst_tag_or_ar_submit_btn' in request.form:
         gt_id = int(request.form['dst_tag_or_ar_submit_btn'])
         gt = General_txt.query.filter(General_txt.id == gt_id).first()
-        #print("")
-        #print("")
-        #print("request.form['txt_type_form_button_name'] -- gt: --  ", gt.id. gt.type)
+        ##print("")
+        ##print("")
+        ##print("request.form['txt_type_form_button_name'] -- gt: --  ", gt.id. gt.type)
         std_gt = attach_gt_to_std(std.id, gt.id)
         gt = specific_gt_type_select2(gt_id, eval(gt)) 
     
@@ -2291,33 +2291,33 @@ def edit_std_gts(Gt, Gt_sub, Gt_sub_sub, Gt_sub_sub_sub):   # for example: for s
 
             #'''
             #####################################import pdb;; #pdb.set_trace()
-            ###print("")
-            #print("")
+            ####print("")
             ##print("")
-            #print("std_gt", std_gt.student, std_gt.general_txt, std_gt.general_txt.title)
-            #print("std_gt.general_txt.gt_type", std_gt.general_txt.gt_type)
-            #print("GT eval ", Gt, eval(Gt))
-            #print("std_gt.general_txt.gt_type == Gt", std_gt.general_txt.gt_type == Gt)
-            #print("std_gt.general_txt.gt_type == eval(Gt)", std_gt.general_txt.gt_type == Gt)
-            #print("")
-            #print("")
+            ###print("")
+            ##print("std_gt", std_gt.student, std_gt.general_txt, std_gt.general_txt.title)
+            ##print("std_gt.general_txt.gt_type", std_gt.general_txt.gt_type)
+            ##print("GT eval ", Gt, eval(Gt))
+            ##print("std_gt.general_txt.gt_type == Gt", std_gt.general_txt.gt_type == Gt)
+            ##print("std_gt.general_txt.gt_type == eval(Gt)", std_gt.general_txt.gt_type == Gt)
+            ##print("")
+            ##print("")
             #'''
                
             if eval(std_gt) == Gt:
                 std_gts.append(std_gt)
        
    #''' 
-    #print("")
-    #print("")   
-    #print("std_gts", std_gts)
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")   
+    ##print("std_gts", std_gts)
+    ##print("")
+    ##print("")
     #'''
     all_gts  = eval(Gt).query.all()                                                  
     gts_not_of_student = list(set(all_gts).difference(set(std_gts)))  #main_gts_not_of_student = all_main_gts - std_gts
     
-    ###print("std_gts", std_gts)
-    ###print("")
+    ####print("std_gts", std_gts)
+    ####print("")
     
     # Get gt's categories
     gt_categories = []  
@@ -2339,9 +2339,9 @@ def edit_std_gts(Gt, Gt_sub, Gt_sub_sub, Gt_sub_sub_sub):   # for example: for s
     
     #'''
     #NOT OF DEBUG 
-    #print("gt_subs : ", gt_subs)
-    #print("")
-    #print("gt_subs_not_of_std : ",gt_subs_not_of_std)    
+    ##print("gt_subs : ", gt_subs)
+    ##print("")
+    ##print("gt_subs_not_of_std : ",gt_subs_not_of_std)    
     #NOT OF DEBUG
     #'''       
 
@@ -2366,13 +2366,13 @@ def edit_std_gts(Gt, Gt_sub, Gt_sub_sub, Gt_sub_sub_sub):   # for example: for s
             gt_sub_sub_subs_not_of_std = gt_sub_sub_subs_not_of_std+get_gt_all_categories_children_not_of_std(std, gt)  #main_gts_not_of_student = all_main_gts - std_gts
     
     #'''
-    #print("")
-    #print("")
-    #print("gt_sub_subs", gt_sub_sub_subs)
-    #print("")
-    #print("gt_sub_sub_subs_not_of_std", gt_sub_sub_subs_not_of_std)
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
+    ##print("gt_sub_subs", gt_sub_sub_subs)
+    ##print("")
+    ##print("gt_sub_sub_subs_not_of_std", gt_sub_sub_subs_not_of_std)
+    ##print("")
+    ##print("")
     #'''
     
     whos = Accupation.query.all()
@@ -2395,11 +2395,11 @@ def edit_std_gts(Gt, Gt_sub, Gt_sub_sub, Gt_sub_sub_sub):   # for example: for s
 
     due_date = date.today()
       
-    #print("")
-    #print("")
-    #print("IN edit_std_gts, BEFORE calling edit_all_main_gts.html --- gt_subs: ", gt_subs)
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
+    ##print("IN edit_std_gts, BEFORE calling edit_all_main_gts.html --- gt_subs: ", gt_subs)
+    ##print("")
+    ##print("")
     return render_template('./gts/table_gts/edit_all_main_gts.html', std=std,  
                                                         std_gts=std_gts, gts_not_of_student=gts_not_of_student, gt_categories=gt_categories,
                                                         gt_subs=gt_subs, gt_subs_not_of_std=gt_subs_not_of_std,
@@ -2458,12 +2458,12 @@ def reset_and_get_profile(selected_student_id):
 @login_required
 def std_edit_profile(dsply_direction):
 
-    print("")
-    print("")
-    print("IN get_profile_data")
+    #print("")
+    #print("")
+    #print("IN get_profile_data")
     
     
-    print("")
+    #print("")
     
     #DEBUG - ARESE!
 
@@ -2490,10 +2490,10 @@ def std_edit_profile(dsply_direction):
             db.session.add(default_tag)
             db.session.commit()
     
-    print("")
-    print("")
-    print("DEFAULT TAG: ", default_tag.id, default_tag.body)
-    print("")
+    #print("")
+    #print("")
+    #print("DEFAULT TAG: ", default_tag.id, default_tag.body)
+    #print("")
     
     sub_tags = Sub_tag.query.all()
     std_sub_tags = []
@@ -2505,7 +2505,7 @@ def std_edit_profile(dsply_direction):
     default_sub_tag = Sub_tag.query.filter(Sub_tag.selected==True).first()
     if default_sub_tag == None:
         for st in std_sub_tags:
-            print("SUB-TAG: ", st.id, st.body)
+            #print("SUB-TAG: ", st.id, st.body)
             if st.default==True:
                 default_sub_tag = st
                 break
@@ -2519,14 +2519,6 @@ def std_edit_profile(dsply_direction):
     all_tag = Tag.query.filter(Tag.body=='all').first()
     all_sub_tag = Sub_tag.query.filter(Sub_tag.body=='all').first()
     all_sub_tags = all_sub_tag
-    
-    
-    
-    print("")
-    print("")
-    print("IN END OF std_edit_profile DEFAULT-TAG: {0}  DEFAULT-SUB-TAG: {1}".format(
-                                        default_tag.id, default_sub_tag==None))
-    print("")
     
     
     form = Gt_form()
@@ -2593,23 +2585,23 @@ def std_edit_profile(dsply_direction):
 
 
     
-    print("")
-    print("")
-    print("std_edit_profile")
-    print("SBJ ODD: ", sbj.odd_color)
-    print("SBJ EVEN: ", sbj.even_color)
-    print("")
-    print("STRN ODD: ", strn.odd_color)
-    print("STRN EVEN: ", strn.even_color)
-    print("")
-    print("WEAK ODD: ", weak.odd_color)
-    print("WEAK EVEN: ", weak.even_color)
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print("std_edit_profile")
+    #print("SBJ ODD: ", sbj.odd_color)
+    #print("SBJ EVEN: ", sbj.even_color)
+    #print("")
+    #print("STRN ODD: ", strn.odd_color)
+    #print("STRN EVEN: ", strn.even_color)
+    #print("")
+    #print("WEAK ODD: ", weak.odd_color)
+    #print("WEAK EVEN: ", weak.even_color)
+    #print("")
+    #print("")
   
-    print("IN END OF std_edit_profile Calling std_edit_profile.html")
-    print("")
-    print("")
+    #print("IN END OF std_edit_profile Calling std_edit_profile.html")
+    #print("")
+    #print("")
     
     if dsply_direction == 1:
         return render_template('./profile/horizontal_dsply/std_edit_profile.html', 
@@ -2648,32 +2640,22 @@ import sys
 #FROM  https://stackoverflow.com/questions/45131503/unable-to-receive-data-from-ajax-call-flask
 @std.route('/get_sub_tag_profile', methods=['GET', 'POST'])
 def get_sub_tag_profile():
-    
-    if 'show_std_profile' in request.form:   # GET AND SAVE SUB TAGS
-        print("")
-        print(request.form['show_std_profile'])
-        
-    if 'get_sub_tag_profile' in request.form:   # GET AND SAVE SUB TAGS
-        print("")
-        print("get_sub_tag_profile:")
-        print(request.form['get_sub_tag_profile'])
-        print("")
-        
+
     if 'tag' in request.form:   # GET AND SAVE TAGS
         form_tag = Tag.query.filter_by(id=request.form['tag']).first()
         if form_tag != None:
             selected_tag = tag_select2(form_tag.id)
 
-        print("")
-        print("")
-        print("IN --- get_sub_tag_profile --- form_tag: ", request.form['tag'], form_tag)
+        #print("")
+        #print("")
+        #print("IN --- get_sub_tag_profile --- form_tag: ", request.form['tag'], form_tag)
         
     if 'sub_tag' in request.form:   # GET AND SAVE TAGS
         form_sub_tag = Sub_tag.query.filter_by(id=request.form['sub_tag']).first()
-        print("form_sub_tag: ", request.form['sub_tag'], form_sub_tag)
-        print("IN --- get_sub_tag_profile --- 'tag' in request.form: ", 'tag' in request.form)
-        print("")
-        print("")
+        #print("form_sub_tag: ", request.form['sub_tag'], form_sub_tag)
+        #print("IN --- get_sub_tag_profile --- 'tag' in request.form: ", 'tag' in request.form)
+        #print("")
+        #print("")
         #sub_tag_id = re.sub(r"\D", "", form_sub_tag)
         if form_sub_tag == None:
             flash("נא ךבחור נושא וקטגוריה")
@@ -2700,13 +2682,13 @@ def get_sub_tag_profile():
     prf.set_parent(selected_sub_tag)
     db.session.commit()
     
-    print("")
-    print("")
+    #print("")
+    #print("")
     st = Sub_tag.query.filter(Sub_tag.selected==True).first()
     t = Tag.query.filter(Tag.selected==True).first()
-    print("IN END OF sub_tag_profile selected_tag={0} selected_sub_tag = {1} ".format( t.id, st.id))
-    print("")
-    print("")
+    #print("IN END OF sub_tag_profile selected_tag={0} selected_sub_tag = {1} ".format( t.id, st.id))
+    #print("")
+    #print("")
     sys.stdout.flush()
 
     return std_edit_profile(0)
@@ -2717,21 +2699,21 @@ def get_sub_tag_profile():
 @std.route('/tag_to_profile_add', methods=['GET', 'POST'])
 def tag_to_profile_add():
             
-    print("")
-    print("")
-    print("IN tag_to_profile_add ")
+    #print("")
+    #print("")
+    #print("IN tag_to_profile_add ")
 
     tag_id =  request.form['tag_id']
 
     
-    print("tag_id: ", tag_id)
+    #print("tag_id: ", tag_id)
       
     tag = tag_select2(tag_id)
     
-    print("")
-    print("")
-    print("IN tag_to_profile_add AFTER SELECT2: ")
-    print("tag_id: ", tag.id)
+    #print("")
+    #print("")
+    #print("IN tag_to_profile_add AFTER SELECT2: ")
+    #print("tag_id: ", tag.id)
     
     profile = Profile.query.filter(Profile.selected==True).first()
     profile.set_parent(tag)
@@ -2747,11 +2729,11 @@ def tag_to_profile_add():
     
     db.session.commit()
     
-    print("")
-    print("")
-    print("IN END OF tag_to_profile_add , calling std_edit_profile")
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print("IN END OF tag_to_profile_add , calling std_edit_profile")
+    #print("")
+    #print("")
     
     return std_edit_profile(1)
   
@@ -2760,25 +2742,25 @@ def tag_to_profile_add():
 @std.route('/tag_sub_tag_to_profile_add', methods=['GET', 'POST'])
 def tag_sub_tag_to_profile_add():
             
-    print("")
-    print("")
-    print("IN tag_sub_tag_to_profile_add ")
+    #print("")
+    #print("")
+    #print("IN tag_sub_tag_to_profile_add ")
 
     tag_id =  request.form['tag_id']
     sub_tag_id = request.form['sub_tag_id']
 
     
-    #print("tag_id: ", tag_id)
-    print("sub_tag_id: ", sub_tag_id)
+    ##print("tag_id: ", tag_id)
+    #print("sub_tag_id: ", sub_tag_id)
       
     tag = tag_select2(tag_id)
     sub_tag = sub_tag_select2(sub_tag_id)
     
-    print("")
-    print("")
-    print("IN tag_sub_tag_to_profile_add AFTER SELECT2: ")
-    print("tag_id: ", tag.id)
-    print("sub_tag_id: ", sub_tag.id)
+    #print("")
+    #print("")
+    #print("IN tag_sub_tag_to_profile_add AFTER SELECT2: ")
+    #print("tag_id: ", tag.id)
+    #print("sub_tag_id: ", sub_tag.id)
     
     profile = Profile.query.filter(Profile.selected==True).first()
     profile.set_parent(tag)
@@ -2795,11 +2777,11 @@ def tag_sub_tag_to_profile_add():
     
     db.session.commit()
     
-    print("")
-    print("")
-    print("IN END OF tag_sub_tag_to_profile_add , calling std_edit_profile")
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print("IN END OF tag_sub_tag_to_profile_add , calling std_edit_profile")
+    #print("")
+    #print("")
     
     return std_edit_profile(1)
   
@@ -2808,32 +2790,32 @@ def tag_sub_tag_to_profile_add():
 @std.route('/sub_tag/<tag_id>', methods=['GET', 'POST'])
 def sub_tag(tag_id):
             
-    print("")
-    print("")
-    print("IN sub_tag ")
-    print("tag_id: ", tag_id)
+    #print("")
+    #print("")
+    #print("IN sub_tag ")
+    #print("tag_id: ", tag_id)
       
     tag = Tag.query.filter(Tag.id==tag_id).first()
     sub_tags_array =[]
     all_sub_tags = Sub_tag.query.all()
     
-    print("")
-    print("")
+    #print("")
+    #print("")
     
     for st in all_sub_tags:
         sub_tag_obj = {}   #JSON STYLE
         if tag.is_parent_of(st):
-            print("IN SUB_TAG RETURNING TO JS FETCH CALL")
-            print("SUB: ", st.id, st.title)
-            print("")
+            #print("IN SUB_TAG RETURNING TO JS FETCH CALL")
+            #print("SUB: ", st.id, st.title)
+            #print("")
             sub_tag_obj['id'] = st.id
             sub_tag_obj['title'] = st.title
             sub_tags_array.append(sub_tag_obj)
             
-    print("")
-    print("")
-    print("IN sub_tag ")
-    print("sub_tags_array: ", sub_tags_array)
+    #print("")
+    #print("")
+    #print("IN sub_tag ")
+    #print("sub_tags_array: ", sub_tags_array)
         
     return jsonify({'sub_tags': sub_tags_array})
   
@@ -2842,10 +2824,10 @@ def sub_tag(tag_id):
 @std.route('/std_part_to_prf_add/<int:dsply_direction>', methods=['GET', 'POST'])
 def std_part_to_prf_add(new_gt_type, new_gt_id, new_gt_title, new_gt_body, tag_id, sub_tag_id, dsply_direction):
 
-    print("")
-    print("")
+    #print("")
+    #print("")
     
-    print(" IN std_part_to_prf_add")
+    #print(" IN std_part_to_prf_add")
 
     if tag_id == 0:
         tag = Tag.query.filter(Tag.selected==True).first()
@@ -2863,21 +2845,21 @@ def std_part_to_prf_add(new_gt_type, new_gt_id, new_gt_title, new_gt_body, tag_i
         sub_tag_id = sub_tag_id = sub_tag.id
             
             
-    print("TAG-ID ", tag_id)
-    print("SUB-ID ", sub_tag_id)
-    print("")
-    print("")
+    #print("TAG-ID ", tag_id)
+    #print("SUB-ID ", sub_tag_id)
+    #print("")
+    #print("")
     tag = Tag.query.filter(Tag.id==tag_id).first()
     
     sub_tag = Sub_tag.query.filter(Sub_tag.id==sub_tag_id).first()
     
-    print("")
-    print("")
-    print("IN std_part_to_prf_add")
-    print("TAG: ", tag, tag.id)
-    print("SUB-TAG: ", sub_tag, sub_tag.id) 
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print("IN std_part_to_prf_add")
+    #print("TAG: ", tag, tag.id)
+    #print("SUB-TAG: ", sub_tag, sub_tag.id) 
+    #print("")
+    #print("")
 
     profile = Profile.query.filter(Profile.selected=='True').first()
     if profile == None:
@@ -2886,24 +2868,24 @@ def std_part_to_prf_add(new_gt_type, new_gt_id, new_gt_title, new_gt_body, tag_i
         
     ### POST Case
     ### FROM https://stackoverflow.com/questions/28209131/wtforms-post-with-selectfield-not-working
-    ##print ("form.validate_on_submit", form.validate_on_submit)
+    ###print ("form.validate_on_submit", form.validate_on_submit)
     
-    print("In std_part_to_prf_add profile is :", profile, profile.id)
-    print("")    
-    print("")    
-    print("In std_part_to_prf_add new_gt_title is :", new_gt_title)
-    print("")    
-    print("In std_part_to_prf_add new_gt_id is :", new_gt_id)
-    print("")
-    print("In std_part_to_prf_add new_gt_body is :", new_gt_body)
-    print("")
-    print("In std_part_to_prf_add gt_type is :", new_gt_type)
-    print("")
-    print("")
-    print(" *** In std_part_to_prf_add TAG is :", tag, tag.id)
-    print("")
-    print(" *** In std_part_to_prf_add SUB_TAG is :", sub_tag, sub_tag.id)
-    print("")
+    #print("In std_part_to_prf_add profile is :", profile, profile.id)
+    #print("")    
+    #print("")    
+    #print("In std_part_to_prf_add new_gt_title is :", new_gt_title)
+    #print("")    
+    #print("In std_part_to_prf_add new_gt_id is :", new_gt_id)
+    #print("")
+    #print("In std_part_to_prf_add new_gt_body is :", new_gt_body)
+    #print("")
+    #print("In std_part_to_prf_add gt_type is :", new_gt_type)
+    #print("")
+    #print("")
+    #print(" *** In std_part_to_prf_add TAG is :", tag, tag.id)
+    #print("")
+    #print(" *** In std_part_to_prf_add SUB_TAG is :", sub_tag, sub_tag.id)
+    #print("")
     
     author_id = current_user._get_current_object().id 
     
@@ -2916,7 +2898,7 @@ def std_part_to_prf_add(new_gt_type, new_gt_id, new_gt_title, new_gt_body, tag_i
             db.session.add(new_gt)
             db.session.commit()
         
-    #print("new_gt.id  ", new_gt.id)
+    ##print("new_gt.id  ", new_gt.id)
     
     #new_gt = general_txt_select2(new_gt.id)
     
@@ -2959,23 +2941,23 @@ def std_part_to_prf_add(new_gt_type, new_gt_id, new_gt_title, new_gt_body, tag_i
     
     scrt = Scrt.query.filter(Scrt.body=='private').first()
     
-    print("")
-    print("")
-    print("SCRT=None: ", scrt==None)
+    #print("")
+    #print("")
+    #print("SCRT=None: ", scrt==None)
     
     if scrt == None:
         flash ("No such secirity option: private")
         redirect(url_for('gts.edit_gts'))
         
-    print("")
-    print("")
-    print("IN std_part_to_prf_add")
-    print("new_gt", new_gt)
-    print("new_gt", new_gt.id, new_gt.title)
-    print("scrt", scrt)
-    print("scrt", scrt.id, scrt.title)
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print("IN std_part_to_prf_add")
+    #print("new_gt", new_gt)
+    #print("new_gt", new_gt.id, new_gt.title)
+    #print("scrt", scrt)
+    #print("scrt", scrt.id, scrt.title)
+    #print("")
+    #print("")
 
     new_gt.set_parent(scrt)
     scrt.set_parent(new_gt)
@@ -2995,16 +2977,16 @@ def std_part_to_prf_add(new_gt_type, new_gt_id, new_gt_title, new_gt_body, tag_i
     humpty_prf.set_parent(tag)
     humpty_prf.set_parent(sub_tag)
     
-    print("")
-    print("")
-    print("IN std_part_to_prf_add")
-    print("Hynpty prf", humpty_prf.id, humpty_prf.title, humpty_prf.body)
-    print("Add Part: ", new_gt.id, new_gt.title, new_gt.body)
-    print("")
+    #print("")
+    #print("")
+    #print("IN std_part_to_prf_add")
+    #print("Hynpty prf", humpty_prf.id, humpty_prf.title, humpty_prf.body)
+    #print("Add Part: ", new_gt.id, new_gt.title, new_gt.body)
+    #print("")
    
     #selected_sub_tag = Sub_tag.query.filter(Sub_tag.selected==True).first()
-    ##print(" In END OF gt_to_profile_add SUB_GT =: " ,selected_sub_tag, selected_sub_tag.id)
-    ##print(" In END OF gt_to_profile_add NEW_GT =: " ,new_gt.id,  new_gt.gt_type)
+    ###print(" In END OF gt_to_profile_add SUB_GT =: " ,selected_sub_tag, selected_sub_tag.id)
+    ###print(" In END OF gt_to_profile_add NEW_GT =: " ,new_gt.id,  new_gt.gt_type)
     
     new_gt.selected = False
     db.session.commit()
@@ -3015,10 +2997,10 @@ def std_part_to_prf_add(new_gt_type, new_gt_id, new_gt_title, new_gt_body, tag_i
 @std.route('/std_part_to_prf_add2/<int:tag_id>/<int:sub_tag_id>/<int:dsply_direction>', methods=['GET', 'POST'])
 def std_part_to_prf_add2(tag_id, sub_tag_id, dsply_direction):
 
-    print("")
-    print("")
+    #print("")
+    #print("")
     
-    print(" IN std_part_to_prf_ADD2")
+    #print(" IN std_part_to_prf_ADD2")
     
     if tag_id == 0:
         tag = Tag.query.filter(Tag.selected==True).first()
@@ -3037,17 +3019,17 @@ def std_part_to_prf_add2(tag_id, sub_tag_id, dsply_direction):
             
                 
             
-    print("TAG-ID ", tag_id)
-    print("SUB-ID ", sub_tag_id)
-    print("")
-    print("")
+    #print("TAG-ID ", tag_id)
+    #print("SUB-ID ", sub_tag_id)
+    #print("")
+    #print("")
     
     
     
     
-    print("request.form['gt_title'] ",   request.form['gt_title'])
-    print("request.form['gt_body'] ",    request.form['gt_body'])
-    print("request.form['class_name'] ", request.form['class_name'])
+    #print("request.form['gt_title'] ",   request.form['gt_title'])
+    #print("request.form['gt_body'] ",    request.form['gt_body'])
+    #print("request.form['class_name'] ", request.form['class_name'])
 
     new_gt_title =  request.form['gt_title']
     new_gt_body =  request.form['gt_body']
@@ -3060,10 +3042,10 @@ def std_part_to_prf_add2(tag_id, sub_tag_id, dsply_direction):
 @std.route('/std_part_to_prf_add_tag_only2/<int:tag_id>/<int:dsply_direction>', methods=['GET', 'POST'])
 def std_part_to_prf_add_tag_only2(tag_id, dsply_direction):
 
-    print("")
-    print("")
+    #print("")
+    #print("")
     
-    print(" IN std_part_to_prf_ADD3")
+    #print(" IN std_part_to_prf_ADD3")
     
     if tag_id == 0:
         tag = Tag.query.filter(Tag.selected==True).first()
@@ -3073,15 +3055,15 @@ def std_part_to_prf_add_tag_only2(tag_id, dsply_direction):
         tag_id = tag.id
             
             
-    print("TAG-ID ", tag_id)
-    print("")
-    print("")
+    #print("TAG-ID ", tag_id)
+    #print("")
+    #print("")
        
     #####################import pdb; pdb.set_trace()
     
-    #print("request.form['gt_title'] ",   request.form['gt_title'])
-    #print("request.form['gt_body'] ",    request.form['gt_body'])
-    #print("request.form['class_name'] ", request.form['class_name'])
+    ##print("request.form['gt_title'] ",   request.form['gt_title'])
+    ##print("request.form['gt_body'] ",    request.form['gt_body'])
+    ##print("request.form['class_name'] ", request.form['class_name'])
 
     new_gt_title =  request.form['gt_title']
     new_gt_body =  request.form['gt_body']
@@ -3096,12 +3078,12 @@ def std_part_to_prf_add_tag_only2(tag_id, dsply_direction):
 @std.route('/attach_prf_part_to_std_tag_only2/<int:selected_gt_id>/<int:tag_id>/<int:dsply_direction>', methods=['GET', 'POST'])
 def attach_prf_part_to_std_tag_only2(selected_gt_id, tag_id, dsply_direction):
 
-    print("")
-    print("")
-    print(" IN attach_prf_part_to_std_tag_only2")
-    print(" selected_gt_id, tag_id", selected_gt_id, tag_id)
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print(" IN attach_prf_part_to_std_tag_only2")
+    #print(" selected_gt_id, tag_id", selected_gt_id, tag_id)
+    #print("")
+    #print("")
     
     gt = gt_type_select2(selected_gt_id)
     
@@ -3118,9 +3100,9 @@ def std_sbj_to_prf_add2():
        
     #####################import pdb; pdb.set_trace()
     
-    #print("request.form['gt_title'] ",   request.form['gt_title'])
-    #print("request.form['gt_body'] ",    request.form['gt_body'])
-    #print("request.form['class_name'] ", request.form['class_name'])
+    ##print("request.form['gt_title'] ",   request.form['gt_title'])
+    ##print("request.form['gt_body'] ",    request.form['gt_body'])
+    ##print("request.form['class_name'] ", request.form['class_name'])
 
     new_gt_title =  request.form['gt_title']
     new_gt_body =  request.form['gt_body']
@@ -3164,31 +3146,31 @@ def std_prf_part_update(gt_type, gt_title, gt_body):
         return redirect(url_for('students.std_edit_profile', dsply_direction=1) )
    
 
-    print("")
-    print("")
-    print("IN END OF std_prf_part_update updated_gt: ")
-    print("IN std_prf_part_update PRF: ", prf, prf.id)
-    print("IN std_prf_part_update SELECT TAG: ", selected_tag, selected_tag.id)
-    print("IN std_prf_part_update SELECTED SUB TAG: ", selected_sub_tag)
-    print("")
-    print("IN std_prf_part_update updated_GT-ID: ", updated_gt.id)
-    print("IN std_prf_part_update updated_GT_TYPE: ",  updated_gt.type)
-    print("IN std_prf_part_update updated_gt: ",  updated_gt.class_name)
+    #print("")
+    #print("")
+    #print("IN END OF std_prf_part_update updated_gt: ")
+    #print("IN std_prf_part_update PRF: ", prf, prf.id)
+    #print("IN std_prf_part_update SELECT TAG: ", selected_tag, selected_tag.id)
+    #print("IN std_prf_part_update SELECTED SUB TAG: ", selected_sub_tag)
+    #print("")
+    #print("IN std_prf_part_update updated_GT-ID: ", updated_gt.id)
+    #print("IN std_prf_part_update updated_GT_TYPE: ",  updated_gt.type)
+    #print("IN std_prf_part_update updated_gt: ",  updated_gt.class_name)
 
         
-    print("")
     #print("")
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
+    ##print("")
     
     
     new_prf_part = eval(updated_gt.class_name)(gt_title, gt_body, get_author_id())
     db.session.add(new_prf_part)
     db.session.commit()
     
-    print("IN std_prf_part_update updated_GT TITLE: ", updated_gt.title)
-    print("IN std_prf_part_update updated_GT BODY: ",  updated_gt.body)
-    print("")  
+    #print("IN std_prf_part_update updated_GT TITLE: ", updated_gt.title)
+    #print("IN std_prf_part_update updated_GT BODY: ",  updated_gt.body)
+    #print("")  
     
     std_gt = attach_gt_to_std(std.id, new_prf_part.id)
     #db.session.add(std_gt)   already done in attach function
@@ -3200,11 +3182,11 @@ def std_prf_part_update(gt_type, gt_title, gt_body):
     humpty_prf = Profile.query.filter(Profile.body==str(get_dummy_student().id)).first()
     humpty_prf.set_parent(new_prf_part)
         
+    ##print("")
+    #print("IN END OF std_prf_part_update TAG SUB_TAG ", selected_tag, selected_sub_tag)
     #print("")
-    print("IN END OF std_prf_part_update TAG SUB_TAG ", selected_tag, selected_sub_tag)
-    print("")
-    print("")
     #print("")
+    ##print("")
     
     new_prf_part.set_parent(selected_tag)
     new_prf_part.set_parent(selected_sub_tag)
@@ -3212,11 +3194,11 @@ def std_prf_part_update(gt_type, gt_title, gt_body):
     
     #################import pdb; pdb.set_trace()
    
-    #print("")
-    ##print("IN END OF std_prf_part_update prf, std_gt=", prf, std_gt)
-    #print("")
-    #print("")
-    #print("")
+    ##print("")
+    ###print("IN END OF std_prf_part_update prf, std_gt=", prf, std_gt)
+    ##print("")
+    ##print("")
+    ##print("")
     
     updated_gt.selected = False
     
@@ -3229,11 +3211,11 @@ def std_prf_part_update(gt_type, gt_title, gt_body):
 @std.route('/std_prf_part_update2/<int:selected_gt_id>', methods=['GET', 'POST'])
 def std_prf_part_update2(selected_gt_id):
    
-    print("")
-    print("")
-    print("")
-    print("")   
-    print(" IN std_profile_gt_update2: selected_gt_id", selected_gt_id)
+    #print("")
+    #print("")
+    #print("")
+    #print("")   
+    #print(" IN std_profile_gt_update2: selected_gt_id", selected_gt_id)
 
    
     gt = gt_type_select2(selected_gt_id)
@@ -3242,24 +3224,24 @@ def std_prf_part_update2(selected_gt_id):
     gt_body = request.form['gt_body']
     gt_type = gt.type
     
-    print("Calling std_prf_part_update with  gt_type, gt_title, gt_body", gt_type, gt_title, gt_body)
-    print("")
+    #print("Calling std_prf_part_update with  gt_type, gt_title, gt_body", gt_type, gt_title, gt_body)
     #print("")
-    #print("")
-    #print("")
-    #print("")
+    ##print("")
+    ##print("")
+    ##print("")
+    ##print("")
     return std_prf_part_update(gt_type, gt_title, gt_body)	
            
 
 @std.route('/attach_prf_part_to_std2/<int:selected_gt_id>/<int:tag_id>/<int:sub_tag_id>/<int:dsply_direction>', methods=['GET', 'POST'])
 def attach_prf_part_to_std2(selected_gt_id, tag_id, sub_tag_id, dsply_direction):
 
-    print("")
-    print("")
-    print(" IN ATTACH_prf_part_to_std2")
-    print(" selected_gt_id, tag_id, sub_tag_id", selected_gt_id, tag_id, sub_tag_id)
-    print("")
-    print("")
+    #print("")
+    #print("")
+    #print(" IN ATTACH_prf_part_to_std2")
+    #print(" selected_gt_id, tag_id, sub_tag_id", selected_gt_id, tag_id, sub_tag_id)
+    #print("")
+    #print("")
     
     gt = gt_type_select2(selected_gt_id)
     
@@ -3291,7 +3273,7 @@ def std_part_from_prf_delete():
 #Here author is user_id
 def std_part_from_prf_delete2(selected_gt_id, dsply_direction):
    
-    print(" IN gt_from_profile_DELETE2:  selected_gt_id", selected_gt_id)
+    #print(" IN gt_from_profile_DELETE2:  selected_gt_id", selected_gt_id)
     
     gt = General_txt.query.filter(General_txt.id==selected_gt_id).first()
     
@@ -3327,18 +3309,18 @@ def get_gt_all_categories_children(gt):
         if x not in gt_categories:
             gt_categories.append(x)
 
-    ######print("IN get_gt_categories_children -- gt_categories --: ", gt_categories)
-    ######print("")
+    #######print("IN get_gt_categories_children -- gt_categories --: ", gt_categories)
+    #######print("")
        
     gt_all_categories_subs = []
     for ctg in gt_categories:
      
        gt_all_categories_subs.extend(get_gt_children_of_category(gt, ctg)) 
    
-    ##print("")
-    ##print("")
-    ##print("IN get_gt_categories_children -- gt_all_categories_subs --: ", gt_all_categories_subs)
-    ##print("")
+    ###print("")
+    ###print("")
+    ###print("IN get_gt_categories_children -- gt_all_categories_subs --: ", gt_all_categories_subs)
+    ###print("")
     
     return gt_all_categories_subs
  
@@ -3348,18 +3330,18 @@ def get_gt_all_categories_children(gt):
 def get_gt_children_of_category(gt, Ctg):
 
     ####################################import pdb;; #pdb.set_trace()
-    ##print("gt", gt)
-    ##print("")
-    ##print("gt.id", gt.id)
-    ##print("")
-    ##print("gt.gt_type", gt.gt_type)
-    ##print("")
-    ##print("gt.type", gt.type)
-    ##print("")
-    ##print("Ctg", Ctg)
-    ##print("")
-    ##print("Ctg.gt_type", Ctg.gt_type)
-    ##print("")
+    ###print("gt", gt)
+    ###print("")
+    ###print("gt.id", gt.id)
+    ###print("")
+    ###print("gt.gt_type", gt.gt_type)
+    ###print("")
+    ###print("gt.type", gt.type)
+    ###print("")
+    ###print("Ctg", Ctg)
+    ###print("")
+    ###print("Ctg.gt_type", Ctg.gt_type)
+    ###print("")
      
     ##########################import pdb;; #pdb.set_trace()
     gt_ctg_children = []
@@ -3369,9 +3351,9 @@ def get_gt_children_of_category(gt, Ctg):
         if c in all_ctg_gts:
             gt_ctg_children.append(c) 
 
-    ##print(" IN f", gt_ctg_children)
-    ##print("")
-    ##print("")
+    ###print(" IN f", gt_ctg_children)
+    ###print("")
+    ###print("")
     
     return gt_ctg_children
 
@@ -3389,16 +3371,16 @@ def get_gt_all_categories_children_not_of_std(std, gt):
         if x not in gt_categories:
             gt_categories.append(x)
 
-    ###print("IN get_gt_all_categories_children_not_of_std -- gt_categories --: ", gt_categories)
-    ###print("")
+    ####print("IN get_gt_all_categories_children_not_of_std -- gt_categories --: ", gt_categories)
+    ####print("")
     ######################################import pdb;; #pdb.set_trace()
     
     gt_all_categories_subs_not_of_std = []
     for ctg in gt_categories:
         gt_all_categories_subs_not_of_std.extend(get_gt_children_of_category_not_of_std(std, ctg.class_name)) 
     
-    ##print("IN get_gt_all_categories_children_not_of_std -- gt_all_categories_subs_not_of_std --: ", gt_all_categories_subs_not_of_std)
-    ##print("")
+    ###print("IN get_gt_all_categories_children_not_of_std -- gt_all_categories_subs_not_of_std --: ", gt_all_categories_subs_not_of_std)
+    ###print("")
     
     return gt_all_categories_subs_not_of_std
  
@@ -3417,11 +3399,11 @@ def get_gt_children_of_category_not_of_std(std, Ctg):
     
     std_gts = General_txt.query.join(Std_general_txt).filter(Std_general_txt.student_id==std.id).all()
    
-    ###print("IN LINE 2148:",all_ctg_gts)
-    ###print("")
+    ####print("IN LINE 2148:",all_ctg_gts)
+    ####print("")
    
-    ###print("IN IN LINE 2151 std std_gts:",std_gts)
-    ###print("")
+    ####print("IN IN LINE 2151 std std_gts:",std_gts)
+    ####print("")
    
     gt_ctg_children_not_of_std = list(set(all_ctg_gts).difference(set(std_gts)))  #x_not_of_student = all_x - std_x
     
@@ -3429,11 +3411,11 @@ def get_gt_children_of_category_not_of_std(std, Ctg):
     for ctg_gt in all_ctg_gts:
         for std_gt in std_gts:        
             if ctg_gt not in std_gts:
-                #####print("ctg_gt: ", ctg_gt)
-                #####print("")
+                ######print("ctg_gt: ", ctg_gt)
+                ######print("")
                 gt_ctg_children_not_of_std.append(ctg_gt) 
     '''
-    #####print(" IN get_gt_children_of_category_not_of_std", gt_ctg_children_not_of_std)
+    ######print(" IN get_gt_children_of_category_not_of_std", gt_ctg_children_not_of_std)
     
     return gt_ctg_children_not_of_std
 
@@ -3445,8 +3427,8 @@ def get_gt_children_of_category_not_of_std(std, Ctg):
 @login_required
 def update_std_gt():
      
-    ####print(" IN update_std_gt:")
-    ####print("")
+    #####print(" IN update_std_gt:")
+    #####print("")
     
     #########################################import pdb;; #pdb.set_trace()
         
@@ -3457,16 +3439,16 @@ def update_std_gt():
     
    
     std_prf = get_std_gt(std.id, 'Profile')
-    ####print(" IN update_std_gt std profile: ", std_prf)
+    #####print(" IN update_std_gt std profile: ", std_prf)
     
     gt = General_txt.query.filter(General_txt.selected == True).filter(General_txt.type!='profile').first()           
 
     std_gt = attach_gt_to_std(std.id, gt.id)
      
     #########################################import pdb;; #pdb.set_trace()
-    ####print(" IN update_std_gt setting gt to be a child of orf profile", gt, std_prf)
-    ####print("")
-    ####print("")
+    #####print(" IN update_std_gt setting gt to be a child of orf profile", gt, std_prf)
+    #####print("")
+    #####print("")
     
     std_prf.set_parent(gt)
 
@@ -3488,14 +3470,14 @@ def update_std_gt2():
    
     gt_id = int(request.form['save_gt'])    
  
-    #print("")
-    #print("")
-    #print("IN update_std_gt2 -- gt_id:", gt_id)
-    #print("")
+    ##print("")
+    ##print("")
+    ##print("IN update_std_gt2 -- gt_id:", gt_id)
+    ##print("")
         
     current_prf = Profile.query.filter(Profile.selected==True).first()
         
-    ####print("IN update_std_gt2  current_prf", current_prf)
+    #####print("IN update_std_gt2  current_prf", current_prf)
     gt = General_txt.query.filter(General_txt.id==gt_id).first()
     gt = specific_gt_type_select2(gt_id, gt.gt_type)
     

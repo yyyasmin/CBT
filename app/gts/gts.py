@@ -129,6 +129,11 @@ def add_child_to_gt(gt_id, child_gt_id):
 
     gt.set_parent(child_gt)
         
+    print("IN GTS add_child_to_gt GT: ", gt)
+    print("IN GTS add_child_to_gt CHILD-GT: ", child_gt)
+    print("")
+    print("")
+    
     db.session.commit() 
         
     flash ("Child {0} Child {1} added to Parent gt {2} Child {3}  successfully ".format(child_gt.id, child_gt.title,  gt.id, gt.title))

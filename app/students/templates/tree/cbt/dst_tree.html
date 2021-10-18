@@ -271,9 +271,15 @@ function addNewNode(e, selected_node) {
 	//let newlink
 	let new_gts_arr
 		
-
+	let sn = selected_node
+	
+	console.log("IN addNewNode selected_node: ", selected_node)
+	console.log("IN addNewNode selected_node.data: ", selected_node.data)
+	
 	let a_node = selected_node.part.adornedPart
-			
+	
+	console.log("IN addNewNode selected_node.part.adornedPart: ", a_node)
+	
 	myFullDiagram.startTransaction("addNode");
 			
 		let cn = a_node.data.class_name
@@ -443,10 +449,7 @@ function switchNodeColor(e, selected_node) {
 	}
 	
 	m.commitTransaction("changeNodeColor");
-	highlightUsrNodesPath( selected_node )
-	
-	console.log("IN switchNodeColor", selected_node)
-
+	highlightUsrNodesPath( selected_node )	
 	
 }
 

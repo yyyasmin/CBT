@@ -300,12 +300,7 @@ def save_usr_diagram():
 def set_gt_node(gt, parent_arr, is_new_usr_gt):
 
     #DEBUG TO BE DELETED
-    '''
-    gts = General_txt.query.all()
-    for g in gts:
-        g.hide=False
-        db.session.commit()
-    '''    
+
     #DEBUG TO BE DELETED
             
     empty_gts = eval(gt.class_name).query.filter(eval(gt.class_name).title == "Enter your title" or eval(gt.class_name).color=="lightgray" ).all()

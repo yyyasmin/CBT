@@ -265,7 +265,7 @@ class General_txt(db.Model):
                                         
     def __init__(self ,title, body, author_id):
             
-        self.prnt_id = 0
+        self.prnt_id = -1
         
         self.title = title
         self.body = body

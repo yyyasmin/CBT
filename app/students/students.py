@@ -138,59 +138,72 @@ def show_student_tree():
 
     std_arr = []
     tmp_std = std
-    std_arr.append( set_gt_node(std, 0, False) ) 
-    
-    #print("")
-    #print("STD: ", std_arr)
-    #print("")
-    
-    
-    tmp_situations = Situation.query.filter(Situation.hide == False).filter(Situation.title != "Enter your title").all()
-    for s in tmp_situations:
-        #s.prnt_id = 0
-        situations.append( set_gt_node(s, 0, False) )  # DUMMY tmp_situations should be students
-        situations_new_nodes.append( set_gt_node(s, 0, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
-    
-    tmp_situations = Situation.query.filter(Situation.hide == False).filter(Situation.title != "Enter your title").all()
-    for s in tmp_situations:
-        #s.prnt_id = 0
-        situations.append( set_gt_node(s, 0, False) )  # DUMMY tmp_situations should be students
-        situations_new_nodes.append( set_gt_node(s, 0, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+    std_arr.append( set_gt_node(std,False) )
 
-
-        tmp_thoughts = Thought.query.filter(Thought.hide == False).filter(Thought.title != "Enter your title").filter(Thought.prnt_id==s.id).all()
+    print("std.children ", std.children)
+    print("")
+    
+    if std.children == []:
+        s = Situation("New_empty", "New_empty", get_author_id() )  # CREATE  NEW EMPTY Nodes for user
+        s.prnt_id = std.id
+        situations_new_nodes.append( set_gt_node(s, True) )
         
-        for t in tmp_thoughts:
-            #t.prnt_id = s.id
-            ts = set_gt_node(t, tmp_situations, False)
-            if ts !=0:
-                thoughts.append( ts )
-                thoughts_new_nodes.append( set_gt_node(t, tmp_situations, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
-             
-                tmp_emotions = Emotion.query.filter(Emotion.hide == False).filter(Emotion.title != "Enter your title").filter(Emotion.prnt_id==t.id).all()
-                for e in tmp_emotions:
-                    #e.prnt_id = t.id
-                    ts = set_gt_node(e, tmp_thoughts, False)
-                    if ts != 0:
-                        emotions.append( ts )
-                        emotions_new_nodes.append( set_gt_node(e, tmp_thoughts, True) )
+    for s in std.children:
 
-                        tmp_behaviors = Behavior.query.filter(Behavior.hide == False).filter(Behavior.title != "Enter your title").filter(Behavior.prnt_id==e.id).all()                        
-                        for b in tmp_behaviors:
-                            #b.prnt_id = e.id
-                            ts = set_gt_node(b, tmp_emotions, False)
-                            if ts !=0:
-                                behaviors.append( ts )
-                                behaviors_new_nodes.append( set_gt_node(b, tmp_emotions, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
-                             
-                                tmp_results = Result.query.filter(Result.hide == False).filter(Result.title != "Enter your title").filter(Result.prnt_id==b.id).all()
-                                for r in tmp_results:
-                                    #r.prnt_id = b.id
-                                    ts = set_gt_node(r, tmp_behaviors, False)
-                                    if ts != 0:
-                                        results.append( ts )
-                                        results_new_nodes.append( set_gt_node(r, tmp_behaviors, True) )
+        if s.class_name == 'Situation' and s.hide==False:
+            s_has_children = 1
+            s.prnt_id = std.id
+            situations.append( set_gt_node(s, False) )  # DUMMY tmp_situations should be students
+            situations_new_nodes.append( set_gt_node(s, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+        
+        if s.children == []:
+            t = Thought("New_empty", "New_empty", get_author_id() )  # CREATE  NEW EMPTY Nodes for user
+            t.prnt_id = s.id
+            thoughts_new_nodes.append( set_gt_node(t, True) )
+            
+        for t in s.children:
+            if t.class_name == 'Thought' and t.hide==False:
+                print("PREPARING T: ", t)
+                print("")
+                t.prnt_id = s.id
+                thoughts.append( set_gt_node(t, False) )
+                thoughts_new_nodes.append( set_gt_node(t, True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+            
+                if t.children == []:
+                    e = Emotion("New_empty", "New_empty", get_author_id() )  # CREATE  NEW EMPTY Nodes for user
+                    e.prnt_id = t.id
+                    emotions_new_nodes.append( set_gt_node(e, True) )
+                
+                for e in t.children:
+                    if e.class_name == 'Emotion' and e.hide==False:
+                        e.prnt_id = t.id
+                        emotions.append( set_gt_node(e, False) )
+                        emotions_new_nodes.append( set_gt_node(e,True) )
+                    
+                        if e.children == []:
+                            b = Behavior("New_empty", "New_empty", get_author_id() )  # CREATE  NEW EMPTY Nodes for user
+                            b.prnt_id = e.id
+                            behaviors_new_nodes.append( set_gt_node(b, True) )
+                       
+                        for b in e.children:
+                            if b.class_name == 'Behavior' and b.hide==False:
+                                b.prnt_id = e.id
+                                behaviors.append( set_gt_node(b, False) )
+                                behaviors_new_nodes.append( set_gt_node(b,True) )  # Prepare new empty node in case a user wants to add newe gts of his own
+                            
+                                if b.children == []:
+                                    r = Result("New_empty", "New_empty", get_author_id() )  # CREATE  NEW EMPTY Nodes for user
+                                    r.prnt_id = b.id
+                                    results_new_nodes.append( set_gt_node(r, True) )
+                                
+                                for r in b.children:
+                                    if r.class_name == 'Result' and r.hide==False:
+                                        r.prnt_id = b.id
+                                        results.append( set_gt_node(r, False) )
+                                        results_new_nodes.append( set_gt_node(r, True) )
 
+    db.session.commit()
+    
     statuss = []
     for s in Status.query.all():
         statuss.appens(s)
@@ -216,11 +229,11 @@ def show_student_tree():
 	'''	
     print("STD", std_arr)
     print("")
-    for s in situations:
-        print("   STTUATION:", s)
+    for s in situations_new_nodes:
+        print("   NEW-STTUATION:", s)
         print("")
-        for t in thoughts:
-            print("      THOUGHT: ", t)
+        for t in thoughts_new_nodes:
+            print("      NEW-THOUGHT: ", t)
             print("")
                 
     #print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
@@ -297,7 +310,7 @@ def save_usr_diagram():
 
 @std.route('/set_gt_node', methods=['GET', 'POST'])
 @login_required
-def set_gt_node(gt, parent_arr, is_new_usr_gt):
+def set_gt_node(gt, is_new_usr_gt):
 
     #DEBUG TO BE DELETED
 
@@ -313,12 +326,19 @@ def set_gt_node(gt, parent_arr, is_new_usr_gt):
         
     if new_gt_struct.class_name == 'Student':
         new_gt_struct.prnt_id = 0
-        
+    
     if is_new_usr_gt:
-        num_of_new_usr_gt_of_this_class =  eval(gt.class_name).query.filter(eval(gt.class_name).hide==False).filter(eval(gt.class_name).title == "Enter your title").count()
+    
+        print("CREATING NEW ", gt.class_name )
+        print("")
         
-        
-        new_gt = eval(gt.class_name)("Enter your title", "Enter your description", get_author_id() )
+        if gt.title != "New_empty":
+            new_gt = eval(gt.class_name)("Enter your title", "Enter your description", get_author_id() )
+        else:
+            new_gt = gt
+            gt.title = "Enter your title"
+            gt.body = "Enter your description"
+            
         db.session.add(new_gt)
         new_gt.used = False
         new_gt.usr_node = True

@@ -270,12 +270,7 @@ function addNewNode(e, selected_node) {
 	let newNodeData
 	//let newlink
 	let new_gts_arr
-		
-	let sn = selected_node
-	
-	console.log("IN addNewNode selected_node: ", selected_node)
-	console.log("IN addNewNode selected_node.data: ", selected_node.data)
-	
+			
 	let a_node = selected_node.part.adornedPart
 	
 	console.log("IN addNewNode selected_node.part.adornedPart: ", a_node)
@@ -283,9 +278,7 @@ function addNewNode(e, selected_node) {
 	myFullDiagram.startTransaction("addNode");
 			
 		let cn = a_node.data.class_name
-		
-		////console.log("IN NEW NODE SWITCH A-NODE CN: ", a_node.data , cn )
-		
+				
 		switch(cn)  {
 		
 			case "Student":
@@ -299,7 +292,6 @@ function addNewNode(e, selected_node) {
 					return 0
 				}
 				/****************/
-				
 				new_gt = new_gts_arr.pop()
 				//console.log("new_gt", new_gt)
 				break;
@@ -313,8 +305,18 @@ function addNewNode(e, selected_node) {
 					return 0
 				}
 	
+				console.log("LOOKING FOR gt with PARENT-ID ", a_node.data.key)
 				
-				new_gt = new_gts_arr.pop()
+				new_gt = new_gts_arr.find(gt => gt.prnt_id == a_node.data.key );
+				
+				console.log("NEW_GT FOUND: ", new_gt)
+				console.log("NEW_GTS  ARRAY BBBBBBBBBBBedfore filter situation : ", new_gts_arr)
+				
+				new_gts_arr = new_gts_arr.filter(gt=> gt.id == new_gt.id)
+				
+				console.log("NEW_GTS  ARRAY AAAAAAAAAAAAAAAAAAFTER filter situation : ", new_gts_arr)
+
+				//new_gt = new_gts_arr.pop()
 				//////console.log("new_gt", new_gt)
 				break;
 			
@@ -371,9 +373,13 @@ function addNewNode(e, selected_node) {
 				return 0			
 																	
 		}
-		
+				
 		//////console.log("NEW-GT-ARR", new_gts_arr)
 		//////console.log("NEW-GT, NEW-GT-COLOR",new_gt.color)
+		
+		console.log("IN ADDNODE new_gt.prnt_id", new_gt.prnt_id)
+		console.log("IN ADDNODE a_node.data.key", a_node.data.key)
+		console.log("IN ADDNODE a_node.data.parent", a_node.data.parent)
 		
 		newNodeData =  {
 				key:         new_gt.id,

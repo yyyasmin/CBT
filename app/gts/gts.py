@@ -172,7 +172,7 @@ def remove_child_from_gt(gt_id, child_gt_id):
         return render_template('add_or_remove_child.html', gt=gt, gts=gt_children)
          
     child_gt = General_txt.query.filter(General_txt.id == child_gt_id).first()
-    child_gt.prnt_id = 0
+    child_gt.prnt_id = None
     gt.unset_parent(child_gt) 
     
     db.session.commit() 

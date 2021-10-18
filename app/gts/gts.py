@@ -113,10 +113,6 @@ def filter_by_id(id):
 @login_required
 def add_child_to_gt(gt_id, child_gt_id):
         
-    print("IN GTS add_child_to_gt GT: ", gt)
-    print("IN GTS add_child_to_gt CHILD-GT: ", child_gt)
-    print("")
-    print("")
 
     #################import pdb; pdb.set_trace() 	
     author_id = current_user._get_current_object().id
@@ -129,6 +125,11 @@ def add_child_to_gt(gt_id, child_gt_id):
                    
     child_gt = General_txt.query.filter(General_txt.id == child_gt_id).first()
     child_gt.prnt_id = gt.id
+    
+    print("IN GTS add_child_to_gt GT: ", gt)
+    print("IN GTS add_child_to_gt CHILD-GT: ", child_gt)
+    print("")
+    print("")
     
     db.session.commit() 
 

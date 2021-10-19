@@ -308,13 +308,9 @@ function addNewNode(e, selected_node) {
 				console.log("LOOKING FOR gt with PARENT-ID ", a_node.data.key)
 				
 				new_gt = new_gts_arr.find(gt => gt.prnt_id == a_node.data.key );
-				
-				console.log("NEW_GT FOUND: ", new_gt)
-				console.log("NEW_GTS  ARRAY BBBBBBBBBBBedfore filter situation : ", new_gts_arr)
-				
+												
 				new_gts_arr = new_gts_arr.filter(gt=> gt.id == new_gt.id)
 				
-				console.log("NEW_GTS  ARRAY AAAAAAAAAAAAAAAAAAFTER filter situation : ", new_gts_arr)
 
 				//new_gt = new_gts_arr.pop()
 				//////console.log("new_gt", new_gt)
@@ -329,9 +325,12 @@ function addNewNode(e, selected_node) {
 					return 0
 				}
 					
+				console.log("LOOKING FOR gt with PARENT-ID ", a_node.data.key)
 				
-				new_gt = new_gts_arr.pop()
-				//////console.log("new_gt", new_gt)
+				new_gt = new_gts_arr.find(gt => gt.prnt_id == a_node.data.key );
+												
+				new_gts_arr = new_gts_arr.filter(gt=> gt.id == new_gt.id)
+					
 				break;
 			
 			case "Emotion":			
@@ -343,9 +342,12 @@ function addNewNode(e, selected_node) {
 					alert("NO more new nodes aloud", new_gts_arr)
 					return 0
 				}
+				console.log("LOOKING FOR gt with PARENT-ID ", a_node.data.key)
+				
+				new_gt = new_gts_arr.find(gt => gt.prnt_id == a_node.data.key );
+												
+				new_gts_arr = new_gts_arr.filter(gt=> gt.id == new_gt.id)
 						
-				new_gt = new_gts_arr.pop()
-				//////console.log("new_gt", new_gt)
 				break;
 			
 			case "Behavior":
@@ -357,9 +359,13 @@ function addNewNode(e, selected_node) {
 					alert("NO more new nodes aloud", new_gts_arr)
 					return 0
 				}
+				console.log("LOOKING FOR gt with PARENT-ID ", a_node.data.key)
+				
+				new_gt = new_gts_arr.find(gt => gt.prnt_id == a_node.data.key );
+												
+				new_gts_arr = new_gts_arr.filter(gt=> gt.id == new_gt.id)
 					
-				new_gt = new_gts_arr.pop()
-				////console.log("new_gt", new_gt)
+				
 				break;
 				
 			default:

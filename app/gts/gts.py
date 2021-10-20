@@ -53,40 +53,50 @@ def edit_gts():
     #DEBUG ONLY
 
     #DEBUG ONLY
-    print("MREQ METHOD: ", request.method)
+    print("IN edit_gts",)
     print("")
     
+    result = General_txt.query.distinct(General_txt.class_name)
+    table_names  = [r.class_name for r in result]
+    
+    form = Search_form()   
+    form.table_names.choices = table_names
+    
+    print ("table_names: ", table_names)
+
+        
     if request.method == 'GET':
         gts = General_txt.query.filter(General_txt.hide==False).order_by(General_txt.class_name).order_by(General_txt.title).all() 
-        return render_template('edit_gts.html', gts=gts)
-    #IN CASE OF POST IT COMES FROM SEARCH BT CLASS NAME
-    
+        return render_template('edit_gts.html', gts=gts, form=form)
+        
     class_name = request.form.get('class_name')  # IN CASe OF POST IT COMES FROM SEARCH
     
     print("SEARCHING FOR CLASS: ", class_name)
     
-    gts = filter_by_class_name(class_name)
+    table_name = General_txt.query.filter_by(class_name=form.table_names.data).first()
+    print("CHOSEN TABLE NAME: ", table_name.class_name)
+    print("CHOSEN CLASS NAME: ", class_name)
+    print("")
     
-    print("IN edit_gts GTS BY-CLASS: ", gts)
+    if class_name != None:
+        class_to_find_by = class_name
+        
+    else:
+        if table_name != None:
+            class_to_find_by = table_name.class_name
+        
+    gts = filter_by_class_name(class_to_find_by)
     
-    if gts==None or gts==[]:
+    print("IN edit_gts table_names: ", table_names)
+    
+    if gts==None or gts==[]:    # NO GTS FOUND BY STRINGTHAT NEENS THE SEARH IS BT ID NUMBER
         id_to_find_by =class_name
         gts = filter_by_id(id_to_find_by)
         
         print("IN edit_gts GTS BY-ID: ", gts)
         
-    return render_template('edit_gts.html', gts=gts)
-    '''
-    print("")
-    for g in gts:
-        print("g g.class_name", g, g.class_name)
-        print("")
-    
-    i=0
-    for g in gts:
-        g.odd = (i%2 == 1)
-    '''
-    
+    return render_template('edit_gts.html', gts=gts, form=form)
+     
     #################import pdb; pdb.set_trace()
 
 																		
@@ -99,7 +109,7 @@ def filter_by_class_name(class_name):
     #DEBUG ONLY    
     return General_txt.query.filter(General_txt.hide==False).filter(General_txt.class_name.isnot_distinct_from(class_name)).all() 
   																		
-
+																
 @gt.route('/filter_by_id', methods=['GET', 'POST'])
 @login_required
 def filter_by_id(id):

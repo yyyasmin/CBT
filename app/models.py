@@ -322,7 +322,7 @@ class Gt_form(FlaskForm):
    
 class Person(General_txt):
 
-    __tablename__ = 'person'
+    __tablename__ = 'Person'
     __mapper_args__ = {'polymorphic_identity': 'person'}
        
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -358,7 +358,7 @@ class Person(General_txt):
           
             
 class Teacher(General_txt):
-    __tablename__ = 'teacher'
+    __tablename__ = 'Teacher'
     __mapper_args__ = {'polymorphic_identity': 'teacher'}
     
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -393,7 +393,7 @@ class Teacher(General_txt):
 
 
 class Student(General_txt):
-    __tablename__ = 'student'
+    __tablename__ = 'Student'
     __mapper_args__ = {'polymorphic_identity': 'student'}
     
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -436,7 +436,7 @@ class Student(General_txt):
   
 class Role(General_txt):
 
-    __tablename__ = 'role'
+    __tablename__ = 'Role'
     __mapper_args__ = {'polymorphic_identity': 'role'}
        
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -454,7 +454,7 @@ class Role(General_txt):
         
                    
 class Value(General_txt):
-    __tablename__ = 'value'
+    __tablename__ = 'Value'
     __mapper_args__ = {'polymorphic_identity': 'value'}
     
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -477,7 +477,7 @@ class Value(General_txt):
         super(self.__class__, self).__init__(title, body, author_id)       
                    
 class Obstacle(General_txt):
-    __tablename__ = 'obstacle'
+    __tablename__ = 'Obstacle'
     __mapper_args__ = {'polymorphic_identity': 'obstacle'}
     
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -502,7 +502,7 @@ class Obstacle(General_txt):
                
 
 class Situation(General_txt):
-    __tablename__ = 'situation'
+    __tablename__ = 'Situation'
     __mapper_args__ = {'polymorphic_identity': 'situation'}
     
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -648,7 +648,7 @@ class Result(General_txt):
 
 
 class School(General_txt):
-    __tablename__ = 'school'
+    __tablename__ = 'School'
     __mapper_args__ = {'polymorphic_identity': 'school'}
     
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -669,7 +669,7 @@ class School(General_txt):
 
   
 class Destination(General_txt):
-    __tablename__ = 'destination'
+    __tablename__ = 'Destination'
     __mapper_args__ = {'polymorphic_identity': 'destination'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
     
@@ -698,7 +698,7 @@ class Dst_form(FlaskForm):
     
     gt_title = TextField("כותרת מטרה",[validators.Required("יש להכניס מטרה")])                                   
     gt_body =  TextField("תאור מטרה", render_kw={"rows": 70, "cols": 11})
-    
+        
     submit = SubmitField("שמור מטרה")
     
     ### FROM https://stackoverflow.com/questions/44242802/python-flask-validate-selectfield
@@ -706,11 +706,19 @@ class Dst_form(FlaskForm):
         if  not form.ar.data == None:
           raise ValidationError('יש לבחור קבוצת גיל')
 
+#####            
+### FROM https://stackoverflow.com/questions/44242802/python-flask-validate-selectfield
+class Search_form(FlaskForm):
+
+    table_names = SelectField("Table Name", choices=[])                                   
+    
+    submit = SubmitField("שלח לחיפוש")
+
 ############################################ Dst Form for cascade dropdown display     
     
 
 class Goal(General_txt):
-    __tablename__ = 'goal'
+    __tablename__ = 'Goal'
     __mapper_args__ = {'polymorphic_identity': 'goal'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
     
@@ -766,7 +774,7 @@ class Std_goal_form(FlaskForm):
 
     
 class Todo(General_txt):
-    __tablename__ = 'todo'
+    __tablename__ = 'Todo'
     __mapper_args__ = {'polymorphic_identity': 'todo'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
     
@@ -789,7 +797,7 @@ class Todo(General_txt):
 
     
 class Test(General_txt):
-    __tablename__ = 'test'
+    __tablename__ = 'Test'
     __mapper_args__ = {'polymorphic_identity': 'test'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
     
@@ -812,7 +820,7 @@ class Test(General_txt):
 
     
 class Method(General_txt):
-    __tablename__ = 'method'
+    __tablename__ = 'Method'
     __mapper_args__ = {'polymorphic_identity': 'method'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
     
@@ -861,7 +869,7 @@ class Todo_form(FlaskForm):
 
     
 class Profile(General_txt):
-    __tablename__ = 'profile'
+    __tablename__ = 'Profile'
     __mapper_args__ = {'polymorphic_identity': 'profile'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
        
@@ -885,7 +893,7 @@ class Profile(General_txt):
           raise ValidationError('יש לבחור נושא')
 
 class Strength(General_txt):
-    __tablename__ = 'strength'
+    __tablename__ = 'Strength'
     __mapper_args__ = {'polymorphic_identity': 'strength'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
     
@@ -909,7 +917,7 @@ class Strength(General_txt):
         super(self.__class__, self).__init__(title, body, author_id)       
             
 class Subject(General_txt):
-    __tablename__ = 'subject'
+    __tablename__ = 'Subject'
     __mapper_args__ = {'polymorphic_identity': 'subject'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
           
@@ -934,7 +942,7 @@ class Subject(General_txt):
         super(self.__class__, self).__init__(title, body, author_id)
 
 class Weakness(General_txt):
-    __tablename__ = 'weakness'
+    __tablename__ = 'Weakness'
     __mapper_args__ = {'polymorphic_identity': 'weakness'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
     
@@ -958,7 +966,7 @@ class Weakness(General_txt):
         super(self.__class__, self).__init__(title, body, author_id)
 
 class Gray(General_txt):
-    __tablename__ = 'gray'
+    __tablename__ = 'Gray'
     __mapper_args__ = {'polymorphic_identity': 'gray'}
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
     
@@ -982,7 +990,7 @@ class Gray(General_txt):
 ##########Choices #####################################
 
 class Tag(General_txt):
-    __tablename__ = 'tag'
+    __tablename__ = 'Tag'
 
     __mapper_args__ = {'polymorphic_identity': 'tag'}
 
@@ -1003,7 +1011,7 @@ class Tag(General_txt):
         
         
 class Sub_tag(General_txt):
-    __tablename__ = 'sub_tag'
+    __tablename__ = 'Sub_tag'
 
     __mapper_args__ = {'polymorphic_identity': 'sub_tag'}
 
@@ -1026,7 +1034,7 @@ class Sub_tag(General_txt):
         
 class Age_range(General_txt):
 
-    __tablename__ = 'age_range'
+    __tablename__ = 'Age_range'
 
     __mapper_args__ = {'polymorphic_identity': 'age_range'}
 
@@ -1052,7 +1060,7 @@ class Age_range(General_txt):
         
 class Scrt(General_txt):
 
-    __tablename__ = 'scrt'
+    __tablename__ = 'Scrt'
     __mapper_args__ = {'polymorphic_identity': 'scrt'}
 
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -1073,7 +1081,7 @@ class Scrt(General_txt):
       
 class Status(General_txt):
 
-    __tablename__ = 'status'
+    __tablename__ = 'Status'
     __mapper_args__ = {'polymorphic_identity': 'status'}
     
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -1094,7 +1102,7 @@ class Status(General_txt):
     
 class Accupation(General_txt):
 
-    __tablename__ = 'accupation'
+    __tablename__ = 'Accupation'
     __mapper_args__ = {'polymorphic_identity': 'accupation'}
        
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -1115,7 +1123,7 @@ class Accupation(General_txt):
     
 class Method_type(General_txt):
 
-    __tablename__ = 'method_type'
+    __tablename__ = 'Method_type'
     __mapper_args__ = {'polymorphic_identity': 'method_type'}
        
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -1140,7 +1148,7 @@ class Method_type(General_txt):
 						   			   
 class Resource(General_txt):
 
-    __tablename__ = 'resource'
+    __tablename__ = 'Resource'
     __mapper_args__ = {'polymorphic_identity': 'resource'}
        
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)
@@ -1161,7 +1169,7 @@ class Resource(General_txt):
 
 class Document(General_txt):
 
-    __tablename__ = 'document'
+    __tablename__ = 'Document'
     __mapper_args__ = {'polymorphic_identity': 'document'}
        
     id = db.Column(db.ForeignKey(General_txt.id), primary_key=True)

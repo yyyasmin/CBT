@@ -1,0 +1,33 @@
+{% extends "layout.html" %} 
+
+{% block content %}
+
+
+<style>
+
+</style>
+
+
+{% with std=std %}
+	{% include "./tree/cbt/cbt_menu.html" %} 
+{% endwith %} 
+
+
+
+	<form method="POST" action="{{ url_for('students.cbt_filter') }}">
+
+		</br></br>
+				
+		{% include "./tree/cbt/tag_dropdown.html" %}
+
+		</br></br>
+				
+		{% with tag=default_tag, ar=default_ar %}			
+			{% include "./tree/cbt/cbt_tree.html" %}
+		{% endwith %}
+
+		</br></br>
+
+	</form>
+
+{% endblock %}

@@ -8,12 +8,25 @@
 
 <footer>
 	<span style="align: center;">
+	
+
 		
-		<button type="button" id="act_btn"><a style="color:black" href="{{ url_for('students.show_student_tree') }}">הצג עץ מחשבה</a></button>
-		<button type="button" id="act_btn" style="color:black" onclick="save_diagram()">שמור עץ מחשבה</a></button>
+		<button type="button" id="act_btn">
+			<a style="color:black" href="{{ url_for('students.show_student_tree') }}">
+				הצג עץ מחשבה
+			</a>
+		</button>
+		
+		<button type="button" id="act_btn">
+			<a style="color:black" onclick="save_diagram()">
+				שמור עץ מחשבה
+			</a>
+		</button>
 
 	</span>
 	
 </footer>
 
 {% endblock cbt_actions %}
+
+				

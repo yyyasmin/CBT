@@ -207,7 +207,12 @@ def show_student_tree():
     statuss = []
     for s in Status.query.all():
         statuss.appens(s)
-        
+
+    tags = Tag.query.order_by(Tag.title).all() 
+    default_tag = Tag.query.filter(Tag.selected==True).first()
+    if default_tag == None:
+        default_tag = Tag.query.filter(Tag.default==True).first()
+              
     #print("")        
     #print("std_arr", std_arr)
     #print("")        
@@ -238,7 +243,8 @@ def show_student_tree():
                 
     #print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
     
-    return render_template('./tree/cbt/dst_tree.html',  
+    #return render_template('./tree/cbt/dst_tree.html',  
+    return render_template('./tree/cbt/cbt.html',  
                             std=std, std_arr = std_arr,
                             situations = situations, situations_new_nodes=situations_new_nodes,  
                             thoughts = thoughts, thoughts_new_nodes=thoughts_new_nodes,
@@ -246,10 +252,17 @@ def show_student_tree():
                             behaviors=behaviors, behaviors_new_nodes=behaviors_new_nodes,
                             results=results, results_new_nodes=results_new_nodes,
                             all_new_gts = situations_new_nodes+thoughts_new_nodes+emotions_new_nodes+behaviors_new_nodes+results_new_nodes,
-                            whos=behaviors, statuss=statuss,
+                            tags=tags, default_tag=default_tag,
+                            statuss=statuss,
                             )
 
   
+@std.route('/cbt_filter', methods=['GET', 'POST'])
+@login_required
+def cbt_filter():
+    filter_situations()
+    return show_student_tree()
+
     
 import json
 @std.route('/save_usr_diagram', methods=['GET', 'POST'])
@@ -297,16 +310,7 @@ def save_usr_diagram():
         
     return show_student_tree()
     
-    '''    
-    dmmy_array = ["dummy"]
-    
-    res = jsonify( { 'save_d': dmmy_array } )
-    
-    #print( "RES", res )
-    #print("")
-    
-    return res
-    '''
+
 
 @std.route('/set_gt_node', methods=['GET', 'POST'])
 @login_required

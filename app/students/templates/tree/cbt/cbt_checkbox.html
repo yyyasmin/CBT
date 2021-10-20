@@ -1,0 +1,56 @@
+	<!-- FROM https://www.youtube.com/watch?v=XTpLbBJTOM4 -->
+
+{% block cbt_checkbox %}
+
+<style>
+
+</style>
+
+</br>
+	
+<table>	
+	
+		<thead>
+			<tr>	
+				<th style="width:30%"><strong>בחר נושא</strong></th>
+			</tr>
+		</thead>
+	
+	
+	<tbody>
+						
+		<tr>
+															
+			<td>
+			
+				<div type="button" id="gray_title"
+					 onclick="switchGray('subject_id')">
+						subject_title
+				</div>
+
+				<div style="color:black; background-color:{{gray_body}}" 
+					type="button" id="subject_id" class="w3-hide  w3-center gray_body">
+						subject_body
+				</div>
+				
+			</td>
+																		
+		</tr>
+			
+	</tbody>
+	
+</table>
+
+<script>
+function switchGray(id) {
+  var x = document.getElementById(id);
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+</script>
+
+				
+{% endblock cbt_checkbox %}

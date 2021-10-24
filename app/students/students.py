@@ -76,6 +76,9 @@ def index():
         std.selected = False
     db.session.commit() 
 
+    print("IN INDEX 111 ")
+    print("")
+    
     students = Student.query.filter(Student.hide == False).all()
 
     return render_template('try_img_ratio.html')

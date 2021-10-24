@@ -70,14 +70,23 @@ def edit_gts():
         return render_template('edit_gts.html', gts=gts, form=form)
         
     class_name = request.form.get('class_name')  # IN CASe OF POST IT COMES FROM SEARCH
+    table_name = form.table_names.data  # IN CASe OF POST IT COMES FROM SEARCH
     
     print("SEARCHING FOR CLASS: ", class_name)
-    
-    table_name = General_txt.query.filter_by(class_name=form.table_names.data).first()
-    print("CHOSEN TABLE NAME: ", table_name.class_name)
+
     print("CHOSEN CLASS NAME: ", class_name)
-    print("")
+    print("TABLE  NAME: ", table_name)
     
+    #DEBUG
+    debug_gts = General_txt.query.all()
+    for d in debug_gts:
+        print("GT ", d)
+        print("GT_CLASS-NAME ", gt.class_name)
+        prin("")
+    #DEBUG
+        
+    table_name = General_txt.query.filter(General_txt.class_name==form.table_names.data).first()
+
     if class_name != None:
         class_to_find_by = class_name
         

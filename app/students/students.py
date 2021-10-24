@@ -606,6 +606,9 @@ def student_add():
     background = request.form.get('background')
     gender = request.form.get('gender')
 
+
+    import pdb; pdb.set_trace()
+    
     student_already_exist = Student.query.filter(Student.id == id).first()
     if student_already_exist is not None :  #Student already exist in system probably in hide mode
         flash("This student already exists in system", student_already_exist.id)
@@ -614,7 +617,6 @@ def student_add():
     std = Student(id, first_name, last_name, author_id)	        
     #std.person_id = id
     #std.id = id
-    std.person_type = "Student"
     std.gender = gender    
     std.birth_date = birth_date
     std.grade = grade  

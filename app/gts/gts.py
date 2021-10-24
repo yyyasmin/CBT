@@ -44,20 +44,27 @@ from app.select.select import profile_select2, strength_select2, general_txt_sel
  
 from app import *
 from datetime import datetime
-																		
+
+#FROM https://stackoverflow.com/questions/6473925/sqlalchemy-getting-a-list-of-tables					
+from sqlalchemy import create_engine
 
 @gt.route('/edit_gts', methods=['GET', 'POST'])
 @login_required
 def edit_gts():
 
-    #DEBUG ONLY
-
-    #DEBUG ONLY
-    print("IN edit_gts",)
+    print("IN edit_gts")
     print("")
     
+    #DEBUG ONLY
+    
+    #import pdb; pdb.set_trace()
+    print("db.engine.table_names()", db.engine.table_names())
+    print("")
+    
+    #DEBUG ONLY
+    
     result = General_txt.query.distinct(General_txt.class_name)
-    table_names  = [r.class_name for r in result]
+    table_names  = [r for r in db.engine.table_names()]
     
     form = Search_form()   
     form.table_names.choices = table_names
@@ -70,23 +77,14 @@ def edit_gts():
         return render_template('edit_gts.html', gts=gts, form=form)
         
     class_name = request.form.get('class_name')  # IN CASe OF POST IT COMES FROM SEARCH
-    table_name = form.table_names.data  # IN CASe OF POST IT COMES FROM SEARCH
     
     print("SEARCHING FOR CLASS: ", class_name)
-
-    print("CHOSEN CLASS NAME: ", class_name)
-    print("TABLE  NAME: ", table_name)
     
-    #DEBUG
-    debug_gts = General_txt.query.all()
-    for d in debug_gts:
-        print("GT ", d)
-        print("GT_CLASS-NAME ", gt.class_name)
-        prin("")
-    #DEBUG
-        
-    table_name = General_txt.query.filter(General_txt.class_name==form.table_names.data).first()
-
+    table_name = General_txt.query.filter_by(class_name=form.table_names.data).first()
+    print("CHOSEN-1 TABLE NAME: ", table_name.class_name)
+    print("CHOSEN-2 CLASS NAME: ", class_name)
+    print("")
+    
     if class_name != None:
         class_to_find_by = class_name
         
@@ -96,7 +94,7 @@ def edit_gts():
         
     gts = filter_by_class_name(class_to_find_by)
     
-    print("IN edit_gts table_names: ", table_names)
+    print("IN edit_gts CCCCCCCCCCCCCCCCCCCCCCCCCC class_to_find_by: ", class_to_find_by)
     
     if gts==None or gts==[]:    # NO GTS FOUND BY STRINGTHAT NEENS THE SEARH IS BT ID NUMBER
         id_to_find_by =class_name

@@ -607,7 +607,7 @@ def student_add():
     gender = request.form.get('gender')
 
 
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     
     student_already_exist = Student.query.filter(Student.id == id).first()
     if student_already_exist is not None :  #Student already exist in system probably in hide mode

@@ -592,6 +592,9 @@ def get_dummy_student():
 @login_required
 def student_add():
       
+    print("IN STUDENT ADD ")
+    print("")
+    
     author_id = get_author_id()
     
     #print("AYTHOR-ID ", author_id)
